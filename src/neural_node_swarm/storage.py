@@ -1,0 +1,9 @@
+from __future__ import annotations
+
+from typing import Any, Protocol
+
+
+class StorageAdapter(Protocol):
+    def append_event(self, event: dict[str, Any]) -> None: ...
+    def list_events(self) -> list[dict[str, Any]]: ...
+    def get_event(self, event_id: str) -> dict[str, Any] | None: ...
