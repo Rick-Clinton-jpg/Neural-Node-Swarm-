@@ -13,7 +13,7 @@ Node-to-node communication is limited to validated structured data and reference
 ## Run locally
 
 ```bash
-python3 -m pip install -e '.[test]'
+python3 -m pip install -e '.[test,validation]'
 neural-node-swarm "Produce a verified result" --memory episodic.jsonl
 python3 -m pytest -q
 ```
