@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neural-node-swarm.dev/schemas/node-output.schema.json",
+  "title": "Node Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "step_id", "objective", "success_criteria", "required_memory_refs"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "step_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+    "objective": {"type": "string", "minLength": 1, "maxLength": 1000},
+    "success_criteria": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1, "maxLength": 500}},
+    "required_memory_refs": {"type": "array", "items": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,255}$"}},
+    "constraints": {"type": "array", "items": {"type": "string", "minLength": 1, "maxLength": 500}},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1}
+  }
+}
