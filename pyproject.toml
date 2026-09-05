@@ -13,6 +13,7 @@ neural-node-swarm = "neural_node_swarm.cli:main"
 
 [project.optional-dependencies]
 test = ["pytest>=8"]
+validation = ["jsonschema>=4.20"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
