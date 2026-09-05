@@ -50,8 +50,11 @@ class Orchestrator:
             last_error = None
             for _attempt in range(retries + 1):
                 try:
-                    result = self.node_factory(current, round_number)
-                    output = await asyncio.wait_for(result if inspect.isawaitable(result) else asyncio.to_thread(lambda: result), timeout)
+                    if inspect.iscoroutinefunction(self.node_factory):
+                        result = self.node_factory(current, round_number)
+                    else:
+                        result = asyncio.to_thread(self.node_factory, current, round_number)
+                    output = await asyncio.wait_for(result, timeout)
                     self.memory.append(node_id=node_id, round=round_number, objective=current["objective"], output=output)
                     self.metrics.rounds_completed += 1
                     self.metrics.events_committed += 1
