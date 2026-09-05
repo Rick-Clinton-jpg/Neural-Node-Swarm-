@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neural-node-swarm.dev/schemas/memory-event.schema.json",
+  "title": "Memory Event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "event_id", "step_id", "node_id", "round", "objective", "output", "verifier_result", "recorded_at"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "event_id": {"type": "string", "minLength": 1},
+    "step_id": {"type": "string", "minLength": 1},
+    "node_id": {"type": "string", "minLength": 1},
+    "round": {"type": "integer", "minimum": 1, "maximum": 3},
+    "objective": {"type": "string", "minLength": 1},
+    "output": {"$ref": "node-output.schema.json"},
+    "verifier_result": {"$ref": "verifier-result.schema.json"},
+    "recorded_at": {"type": "string", "format": "date-time"}
+  }
+}
