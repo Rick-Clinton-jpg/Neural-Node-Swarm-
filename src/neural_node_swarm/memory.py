@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from .verifier import verify_node_output
+from .consolidation import consolidate
 
 
 class MemoryStore:
@@ -48,9 +49,7 @@ class MemoryStore:
         return resolved
 
     def distilled(self) -> dict[str, Any]:
-        events = self.events()
-        passed = sum(event["verifier_result"]["status"] == "passed" for event in events)
-        return {"schema_version": "1.0", "memory_version": len(events), "source_event_ids": [event["event_id"] for event in events], "patterns": [{"key": "all", "sample_size": len(events), "pass_rate": passed / len(events) if events else 0.0, "failure_count": len(events) - passed}] if events else [], "updated_at": datetime.now(timezone.utc).isoformat()}
+        return consolidate(self.events())
 
     def should_consolidate(self, *, interval: int = 10) -> bool:
         """Deterministic backstop trigger; failure-pattern triggers can be added later."""
