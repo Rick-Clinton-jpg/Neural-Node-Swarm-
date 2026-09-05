@@ -6,15 +6,17 @@ from pathlib import Path
 from .memory import MemoryStore
 from .node import DisposableNode
 from .orchestrator import Orchestrator
+from .sqlite_storage import SQLiteStorage
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run a three-round Neural-Node-Swarm relay")
     parser.add_argument("objective")
     parser.add_argument("--memory", default="episodic.jsonl")
+    parser.add_argument("--storage", choices=("jsonl", "sqlite"), default="jsonl")
     parser.add_argument("--fail-round", type=int, choices=(1, 2, 3))
     args = parser.parse_args()
-    store = MemoryStore(Path(args.memory))
+    store = MemoryStore(Path(args.memory)) if args.storage == "jsonl" else MemoryStore(storage=SQLiteStorage(args.memory))
     node = DisposableNode("node-1", fail_round=args.fail_round)
     final = Orchestrator(store, node.fire).run(args.objective, node_id=node.node_id)
     print(f"completed: {final['step_id']}")
