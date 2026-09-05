@@ -18,14 +18,11 @@ class Check:
 
 
 def verify_node_output(output: Any) -> dict[str, Any]:
-    try:
-        import jsonschema
-        schema_path = Path(__file__).resolve().parents[2] / "schemas" / "node_output.schema.json"
-        schema = json.loads(schema_path.read_text(encoding="utf-8"))
-        validator = jsonschema.Draft202012Validator(schema)
-        schema_errors = sorted(validator.iter_errors(output), key=lambda error: list(error.path))
-    except ImportError:
-        schema_errors = []
+    schema_path = Path(__file__).resolve().parents[2] / "schemas" / "node_output.schema.json"
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    import jsonschema
+    validator = jsonschema.Draft202012Validator(schema)
+    schema_errors = sorted(validator.iter_errors(output), key=lambda error: list(error.path))
     checks: list[Check] = []
     checks.append(Check("object", isinstance(output, dict), "must be an object"))
     if not isinstance(output, dict):
