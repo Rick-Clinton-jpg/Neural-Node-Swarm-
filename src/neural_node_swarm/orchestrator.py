@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import asyncio
+import inspect
 from collections.abc import Callable
 from typing import Any
 
@@ -33,4 +35,24 @@ class Orchestrator:
                 output = node(current, round_number)
                 self.memory.append(node_id=node_id, round=round_number, objective=current["objective"], output=output)
                 current = output
+        return current
+
+    async def run_async(self, objective: str, *, node_id: str = "node-1", timeout: float = 30.0, retries: int = 0) -> dict[str, Any]:
+        """Async-ready relay with bounded node calls and single-threaded commits."""
+        if timeout <= 0 or retries < 0:
+            raise ValueError("timeout must be positive and retries cannot be negative")
+        current = {"schema_version": "1.0", "step_id": "step-0", "objective": objective, "success_criteria": ["next objective is schema-valid"], "required_memory_refs": []}
+        for round_number in range(1, 4):
+            last_error = None
+            for _attempt in range(retries + 1):
+                try:
+                    result = self.node_factory(current, round_number)
+                    output = await asyncio.wait_for(result if inspect.isawaitable(result) else asyncio.to_thread(lambda: result), timeout)
+                    self.memory.append(node_id=node_id, round=round_number, objective=current["objective"], output=output)
+                    current = output
+                    break
+                except (asyncio.TimeoutError, ValueError) as error:
+                    last_error = error
+            else:
+                raise last_error
         return current
