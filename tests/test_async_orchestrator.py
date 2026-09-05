@@ -31,3 +31,12 @@ def test_async_retries_transient_failure(tmp_path):
     asyncio.run(Orchestrator(store, node).run_async("start", retries=1))
     assert attempts == 4
     assert len(store.events()) == 3
+
+
+def test_sync_node_timeout_is_enforced(tmp_path):
+    import time
+    def blocking_node(current, round_number):
+        time.sleep(0.2)
+        return output(round_number)
+    with pytest.raises(asyncio.TimeoutError):
+        asyncio.run(Orchestrator(MemoryStore(tmp_path / "events.jsonl"), blocking_node).run_async("start", timeout=0.01))
