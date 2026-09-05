@@ -19,3 +19,5 @@ python3 -m pytest -q
 ```
 
 Use `--fail-round 2` to inject a malformed node output and verify that the relay stops before committing that event.
+
+Use `--storage sqlite --memory memory.db` to run against the transactional SQLite backend.
