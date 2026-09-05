@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import json
+from pathlib import Path
 from typing import Any
 
 
@@ -16,10 +18,22 @@ class Check:
 
 
 def verify_node_output(output: Any) -> dict[str, Any]:
+    try:
+        import jsonschema
+        schema_path = Path(__file__).resolve().parents[2] / "schemas" / "node_output.schema.json"
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        validator = jsonschema.Draft202012Validator(schema)
+        schema_errors = sorted(validator.iter_errors(output), key=lambda error: list(error.path))
+    except ImportError:
+        schema_errors = []
     checks: list[Check] = []
     checks.append(Check("object", isinstance(output, dict), "must be an object"))
     if not isinstance(output, dict):
         return _result("", "rejected", checks)
+    if schema_errors:
+        checks.append(Check("json_schema", False, "; ".join(error.message for error in schema_errors)))
+    else:
+        checks.append(Check("json_schema", True))
 
     required = ("schema_version", "step_id", "objective", "success_criteria", "required_memory_refs")
     checks.append(Check("required_fields", all(key in output for key in required), "missing required field"))
