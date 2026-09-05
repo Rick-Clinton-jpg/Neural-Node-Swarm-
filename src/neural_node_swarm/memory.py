@@ -12,20 +12,28 @@ from .consolidation import consolidate
 class MemoryStore:
     """Small append-only episodic store with mechanically derived summaries."""
 
-    def __init__(self, path: str | Path):
-        self.path = Path(path)
+    def __init__(self, path: str | Path | None = None, *, storage=None):
+        if path is None and storage is None:
+            raise ValueError("path or storage is required")
+        self.path = Path(path) if path is not None else None
+        self.storage = storage
 
     def append(self, *, node_id: str, round: int, objective: str, output: Any) -> dict[str, Any]:
         result = verify_node_output(output)
         if result["status"] != "passed":
             raise ValueError("unverified output cannot be committed")
         event = {"schema_version": "1.0", "event_id": f"evt-{datetime.now(timezone.utc).timestamp()}", "step_id": output["step_id"], "node_id": node_id, "round": round, "objective": objective, "output": output, "verifier_result": result, "recorded_at": datetime.now(timezone.utc).isoformat()}
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        with self.path.open("a", encoding="utf-8") as stream:
-            stream.write(json.dumps(event, sort_keys=True) + "\n")
+        if self.storage is not None:
+            self.storage.append_event(event)
+        else:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            with self.path.open("a", encoding="utf-8") as stream:
+                stream.write(json.dumps(event, sort_keys=True) + "\n")
         return event
 
     def events(self) -> list[dict[str, Any]]:
+        if self.storage is not None:
+            return self.storage.list_events()
         if not self.path.exists():
             return []
         return [json.loads(line) for line in self.path.read_text(encoding="utf-8").splitlines() if line]
