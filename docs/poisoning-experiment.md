@@ -1,5 +1,24 @@
 # Regional memory poisoning experiment
 
+## Persistence follow-up
+
+`InheritanceStore` adds a SQLite-backed experimental inheritance boundary with
+separate active, audit, and lineage namespaces. Complete records are validated
+against closed schemas before insertion; IDs use UUID4 and timestamps are separate.
+The host promotes an active candidate using an exact numeric evidence check.
+The promotion decision and lineage record commit in one transaction. Rejections
+remain audit-only. Historical records reject UPDATE and DELETE operations.
+
+Run `python3 -m pytest -q tests/test_inheritance_store.py` for restart, namespace
+isolation, rollback, schema rejection, and poisoning controls. Clean state survives;
+poisoned state is withheld; corrupted backing evidence still defeats this rule.
+The new store is separate from the existing orchestrator and MemoryStore. It does
+not yet implement origin contracts, branch decisions, stability windows, or
+node-level communication permissions. Run/region filters provide lookup scoping,
+not authentication. The host API must not be exposed to untrusted workers.
+
+## Original comparison
+
 Run from the checkout after installing the project dependencies:
 
 ```sh
