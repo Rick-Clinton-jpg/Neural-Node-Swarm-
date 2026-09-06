@@ -8,6 +8,7 @@ version = "0.1.0"
 requires-python = ">=3.11"
 description = "Schema-first disposable agent relay with deterministic verification"
 dependencies = ["jsonschema>=4.20"]
+license = "MIT"
 
 [project.scripts]
 neural-node-swarm = "neural_node_swarm.cli:main"

@@ -1,6 +1,6 @@
 import pytest
 
-from neural_node_swarm.poisoning_experiment import experiment, run_case
+from neural_node_swarm.poisoning_experiment import experiment, run_case, run_persistent_promotion
 
 
 def test_poison_is_active_but_not_inherited():
@@ -35,3 +35,13 @@ def test_exact_replay_and_provenance():
 def test_invalid_run_length(count):
     with pytest.raises(ValueError):
         experiment(count)
+
+
+def test_persistent_promotion_drives_successor_reads(tmp_path):
+    governed = run_persistent_promotion(tmp_path / "inheritance.db")
+    assert governed["metrics"] == {
+        "wrong_successor_reads": 0,
+        "correct_successor_reads": 6,
+        "abstentions": 6,
+    }
+    assert all(item["lineage_id"] is None for item in governed["reads"] if item["region"] == "hand")

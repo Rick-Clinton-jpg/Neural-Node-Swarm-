@@ -10,6 +10,8 @@ import argparse
 import json
 from dataclasses import asdict, dataclass
 
+from .inheritance_store import InheritanceStore
+
 
 @dataclass(frozen=True)
 class Candidate:
@@ -79,6 +81,35 @@ def experiment(successors: int = 6) -> dict:
                        evidence_fault=fault, successors=successors)}
                       for name, poison, fault in scenarios
                       for policy in ("shared", "promotion")]}
+
+
+def run_persistent_promotion(path, *, poisoned=True, evidence_fault=False, successors=6):
+    """Exercise the governed policy through persisted active/audit/lineage records."""
+    if type(successors) is not int or successors < 1:
+        raise ValueError("successors must be a positive integer")
+    truth = {"hand": 10, "leg": 20}
+    evidence = {"record:hand": 90 if evidence_fault else 10, "record:leg": 20}
+    store = InheritanceStore(path)
+    run_id = "poisoning-experiment-v1"
+    for candidate in (Candidate("c-hand", "hand", 90 if poisoned else 10, "record:hand"),
+                      Candidate("c-leg", "leg", 20, "record:leg")):
+        active = store.accept(run_id, candidate.region, candidate.value, candidate.evidence_ref)
+        store.promote(run_id, candidate.region, active["id"], evidence)
+    reopened = InheritanceStore(path)
+    reads = []
+    for generation in range(1, successors + 1):
+        for region in truth:
+            lineage = reopened.read("lineage", run_id, region)
+            active = reopened.read("active", run_id, region, lineage["source_id"]) if lineage else None
+            reads.append({"generation": generation, "region": region,
+                          "value": active["value"] if active else None,
+                          "lineage_id": lineage["id"] if lineage else None})
+    wrong = sum(item["value"] is not None and item["value"] != truth[item["region"]] for item in reads)
+    correct = sum(item["value"] == truth[item["region"]] for item in reads)
+    return {"policy": "persistent_promotion", "reads": reads,
+            "metrics": {"wrong_successor_reads": wrong,
+                        "correct_successor_reads": correct,
+                        "abstentions": len(reads) - wrong - correct}}
 
 
 def main():

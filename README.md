@@ -1,6 +1,6 @@
 # Neural Node Swarm
 
-Neural Node Swarm is an experimental, schema-first runtime for disposable agent nodes. Execution is short-lived; continuity is carried by validated objectives and explicit references into persistent memory.
+Neural Node Swarm is a research notebook for a disposable three-round node with schema-bound memory. Despite the project name, parallel swarm execution is not implemented. Execution is short-lived; continuity is carried by structurally validated outputs and explicit memory references.
 
 ## Current status
 
@@ -40,7 +40,7 @@ Each node fires for exactly three rounds. After round three it terminates. A suc
 
 Node output is closed-schema data. `notes`, reasoning traces, raw context, and other arbitrary side channels are rejected. Failed or malformed outputs are not committed to trusted memory. Verification is mechanical and does not ask another model to judge plausibility.
 
-The current verifier establishes structural validity and bounded fields. It does not prove that an open-ended answer is factually correct; meaningful correctness requires a task-specific deterministic verifier.
+In this repository, a "verified event" means that its JSON structure and deterministic boundary checks passed. It does not mean the objective was achieved or the content is factually true. Meaningful correctness requires a task-specific verifier.
 
 ## Installation and usage
 
@@ -90,4 +90,8 @@ alongside contamination. This harness is separate from the runtime's memory path
 5. Add structured logs, latency metrics, and replayable evaluation runs.
 6. Explore controlled concurrency while preserving deterministic commit order.
 
-The Mirror Constitution and Chainmail concepts are being treated as a separate governance layer that may later wrap this runtime; they are not part of the current execution core.
+The Mirror Constitution, Chainmail, and Quorum are separate projects or concepts. They are not part of this execution core.
+
+## License
+
+MIT
