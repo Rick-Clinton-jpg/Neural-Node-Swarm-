@@ -78,6 +78,11 @@ tests/                    Unit, integration, failure-injection tests
 
 ## Roadmap
 
+The [regional poisoning experiment](docs/poisoning-experiment.md) compares ordinary
+shared memory with explicit evidence-gated inheritance using deterministic
+workers. It includes clean and corrupted-evidence controls and reports abstentions
+alongside contamination. This harness is separate from the runtime's memory path.
+
 1. Add broader schema-conformance and verifier tests.
 2. Add domain-specific deterministic success criteria.
 3. Add opt-in model clients behind the existing injectable adapter.

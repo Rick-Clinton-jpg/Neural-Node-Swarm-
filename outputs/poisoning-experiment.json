@@ -1,0 +1,800 @@
+{
+  "cases": [
+    {
+      "active": {
+        "hand": 10,
+        "leg": 20
+      },
+      "audit": [
+        {
+          "candidate": {
+            "candidate_id": "c-hand",
+            "evidence_ref": "record:hand",
+            "region": "hand",
+            "value": 10
+          },
+          "checks": {
+            "evidence": true,
+            "immediate": true
+          },
+          "event_id": "decision:c-hand",
+          "inherited": true,
+          "kind": "shared_write"
+        },
+        {
+          "candidate": {
+            "candidate_id": "c-leg",
+            "evidence_ref": "record:leg",
+            "region": "leg",
+            "value": 20
+          },
+          "checks": {
+            "evidence": true,
+            "immediate": true
+          },
+          "event_id": "decision:c-leg",
+          "inherited": true,
+          "kind": "shared_write"
+        }
+      ],
+      "durable": {
+        "hand": {
+          "decision_ref": "decision:c-hand",
+          "value": 10
+        },
+        "leg": {
+          "decision_ref": "decision:c-leg",
+          "value": 20
+        }
+      },
+      "evidence_fault": false,
+      "metrics": {
+        "abstentions": 0,
+        "contaminated_durable_regions": 0,
+        "correct_successor_reads": 12,
+        "wrong_successor_reads": 0
+      },
+      "poisoned": false,
+      "policy": "shared",
+      "reads": [
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 1,
+          "region": "hand",
+          "value": 10
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 1,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 2,
+          "region": "hand",
+          "value": 10
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 2,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 3,
+          "region": "hand",
+          "value": 10
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 3,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 4,
+          "region": "hand",
+          "value": 10
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 4,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 5,
+          "region": "hand",
+          "value": 10
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 5,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 6,
+          "region": "hand",
+          "value": 10
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 6,
+          "region": "leg",
+          "value": 20
+        }
+      ],
+      "scenario": "clean",
+      "successors": 6
+    },
+    {
+      "active": {
+        "hand": 10,
+        "leg": 20
+      },
+      "audit": [
+        {
+          "candidate": {
+            "candidate_id": "c-hand",
+            "evidence_ref": "record:hand",
+            "region": "hand",
+            "value": 10
+          },
+          "checks": {
+            "evidence": true,
+            "immediate": true
+          },
+          "event_id": "decision:c-hand",
+          "inherited": true,
+          "kind": "promotion"
+        },
+        {
+          "candidate": {
+            "candidate_id": "c-leg",
+            "evidence_ref": "record:leg",
+            "region": "leg",
+            "value": 20
+          },
+          "checks": {
+            "evidence": true,
+            "immediate": true
+          },
+          "event_id": "decision:c-leg",
+          "inherited": true,
+          "kind": "promotion"
+        }
+      ],
+      "durable": {
+        "hand": {
+          "decision_ref": "decision:c-hand",
+          "value": 10
+        },
+        "leg": {
+          "decision_ref": "decision:c-leg",
+          "value": 20
+        }
+      },
+      "evidence_fault": false,
+      "metrics": {
+        "abstentions": 0,
+        "contaminated_durable_regions": 0,
+        "correct_successor_reads": 12,
+        "wrong_successor_reads": 0
+      },
+      "poisoned": false,
+      "policy": "promotion",
+      "reads": [
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 1,
+          "region": "hand",
+          "value": 10
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 1,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 2,
+          "region": "hand",
+          "value": 10
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 2,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 3,
+          "region": "hand",
+          "value": 10
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 3,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 4,
+          "region": "hand",
+          "value": 10
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 4,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 5,
+          "region": "hand",
+          "value": 10
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 5,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 6,
+          "region": "hand",
+          "value": 10
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 6,
+          "region": "leg",
+          "value": 20
+        }
+      ],
+      "scenario": "clean",
+      "successors": 6
+    },
+    {
+      "active": {
+        "hand": 90,
+        "leg": 20
+      },
+      "audit": [
+        {
+          "candidate": {
+            "candidate_id": "c-hand",
+            "evidence_ref": "record:hand",
+            "region": "hand",
+            "value": 90
+          },
+          "checks": {
+            "evidence": false,
+            "immediate": true
+          },
+          "event_id": "decision:c-hand",
+          "inherited": true,
+          "kind": "shared_write"
+        },
+        {
+          "candidate": {
+            "candidate_id": "c-leg",
+            "evidence_ref": "record:leg",
+            "region": "leg",
+            "value": 20
+          },
+          "checks": {
+            "evidence": true,
+            "immediate": true
+          },
+          "event_id": "decision:c-leg",
+          "inherited": true,
+          "kind": "shared_write"
+        }
+      ],
+      "durable": {
+        "hand": {
+          "decision_ref": "decision:c-hand",
+          "value": 90
+        },
+        "leg": {
+          "decision_ref": "decision:c-leg",
+          "value": 20
+        }
+      },
+      "evidence_fault": false,
+      "metrics": {
+        "abstentions": 0,
+        "contaminated_durable_regions": 1,
+        "correct_successor_reads": 6,
+        "wrong_successor_reads": 6
+      },
+      "poisoned": true,
+      "policy": "shared",
+      "reads": [
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 1,
+          "region": "hand",
+          "value": 90
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 1,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 2,
+          "region": "hand",
+          "value": 90
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 2,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 3,
+          "region": "hand",
+          "value": 90
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 3,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 4,
+          "region": "hand",
+          "value": 90
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 4,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 5,
+          "region": "hand",
+          "value": 90
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 5,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 6,
+          "region": "hand",
+          "value": 90
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 6,
+          "region": "leg",
+          "value": 20
+        }
+      ],
+      "scenario": "poison",
+      "successors": 6
+    },
+    {
+      "active": {
+        "hand": 90,
+        "leg": 20
+      },
+      "audit": [
+        {
+          "candidate": {
+            "candidate_id": "c-hand",
+            "evidence_ref": "record:hand",
+            "region": "hand",
+            "value": 90
+          },
+          "checks": {
+            "evidence": false,
+            "immediate": true
+          },
+          "event_id": "decision:c-hand",
+          "inherited": false,
+          "kind": "promotion"
+        },
+        {
+          "candidate": {
+            "candidate_id": "c-leg",
+            "evidence_ref": "record:leg",
+            "region": "leg",
+            "value": 20
+          },
+          "checks": {
+            "evidence": true,
+            "immediate": true
+          },
+          "event_id": "decision:c-leg",
+          "inherited": true,
+          "kind": "promotion"
+        }
+      ],
+      "durable": {
+        "leg": {
+          "decision_ref": "decision:c-leg",
+          "value": 20
+        }
+      },
+      "evidence_fault": false,
+      "metrics": {
+        "abstentions": 6,
+        "contaminated_durable_regions": 0,
+        "correct_successor_reads": 6,
+        "wrong_successor_reads": 0
+      },
+      "poisoned": true,
+      "policy": "promotion",
+      "reads": [
+        {
+          "decision_ref": null,
+          "generation": 1,
+          "region": "hand",
+          "value": null
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 1,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": null,
+          "generation": 2,
+          "region": "hand",
+          "value": null
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 2,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": null,
+          "generation": 3,
+          "region": "hand",
+          "value": null
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 3,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": null,
+          "generation": 4,
+          "region": "hand",
+          "value": null
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 4,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": null,
+          "generation": 5,
+          "region": "hand",
+          "value": null
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 5,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": null,
+          "generation": 6,
+          "region": "hand",
+          "value": null
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 6,
+          "region": "leg",
+          "value": 20
+        }
+      ],
+      "scenario": "poison",
+      "successors": 6
+    },
+    {
+      "active": {
+        "hand": 90,
+        "leg": 20
+      },
+      "audit": [
+        {
+          "candidate": {
+            "candidate_id": "c-hand",
+            "evidence_ref": "record:hand",
+            "region": "hand",
+            "value": 90
+          },
+          "checks": {
+            "evidence": true,
+            "immediate": true
+          },
+          "event_id": "decision:c-hand",
+          "inherited": true,
+          "kind": "shared_write"
+        },
+        {
+          "candidate": {
+            "candidate_id": "c-leg",
+            "evidence_ref": "record:leg",
+            "region": "leg",
+            "value": 20
+          },
+          "checks": {
+            "evidence": true,
+            "immediate": true
+          },
+          "event_id": "decision:c-leg",
+          "inherited": true,
+          "kind": "shared_write"
+        }
+      ],
+      "durable": {
+        "hand": {
+          "decision_ref": "decision:c-hand",
+          "value": 90
+        },
+        "leg": {
+          "decision_ref": "decision:c-leg",
+          "value": 20
+        }
+      },
+      "evidence_fault": true,
+      "metrics": {
+        "abstentions": 0,
+        "contaminated_durable_regions": 1,
+        "correct_successor_reads": 6,
+        "wrong_successor_reads": 6
+      },
+      "poisoned": true,
+      "policy": "shared",
+      "reads": [
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 1,
+          "region": "hand",
+          "value": 90
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 1,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 2,
+          "region": "hand",
+          "value": 90
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 2,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 3,
+          "region": "hand",
+          "value": 90
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 3,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 4,
+          "region": "hand",
+          "value": 90
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 4,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 5,
+          "region": "hand",
+          "value": 90
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 5,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 6,
+          "region": "hand",
+          "value": 90
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 6,
+          "region": "leg",
+          "value": 20
+        }
+      ],
+      "scenario": "poison_and_corrupt_evidence",
+      "successors": 6
+    },
+    {
+      "active": {
+        "hand": 90,
+        "leg": 20
+      },
+      "audit": [
+        {
+          "candidate": {
+            "candidate_id": "c-hand",
+            "evidence_ref": "record:hand",
+            "region": "hand",
+            "value": 90
+          },
+          "checks": {
+            "evidence": true,
+            "immediate": true
+          },
+          "event_id": "decision:c-hand",
+          "inherited": true,
+          "kind": "promotion"
+        },
+        {
+          "candidate": {
+            "candidate_id": "c-leg",
+            "evidence_ref": "record:leg",
+            "region": "leg",
+            "value": 20
+          },
+          "checks": {
+            "evidence": true,
+            "immediate": true
+          },
+          "event_id": "decision:c-leg",
+          "inherited": true,
+          "kind": "promotion"
+        }
+      ],
+      "durable": {
+        "hand": {
+          "decision_ref": "decision:c-hand",
+          "value": 90
+        },
+        "leg": {
+          "decision_ref": "decision:c-leg",
+          "value": 20
+        }
+      },
+      "evidence_fault": true,
+      "metrics": {
+        "abstentions": 0,
+        "contaminated_durable_regions": 1,
+        "correct_successor_reads": 6,
+        "wrong_successor_reads": 6
+      },
+      "poisoned": true,
+      "policy": "promotion",
+      "reads": [
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 1,
+          "region": "hand",
+          "value": 90
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 1,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 2,
+          "region": "hand",
+          "value": 90
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 2,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 3,
+          "region": "hand",
+          "value": 90
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 3,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 4,
+          "region": "hand",
+          "value": 90
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 4,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 5,
+          "region": "hand",
+          "value": 90
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 5,
+          "region": "leg",
+          "value": 20
+        },
+        {
+          "decision_ref": "decision:c-hand",
+          "generation": 6,
+          "region": "hand",
+          "value": 90
+        },
+        {
+          "decision_ref": "decision:c-leg",
+          "generation": 6,
+          "region": "leg",
+          "value": 20
+        }
+      ],
+      "scenario": "poison_and_corrupt_evidence",
+      "successors": 6
+    }
+  ],
+  "experiment_version": "1.0",
+  "worker": "deterministic durable-memory reader"
+}
