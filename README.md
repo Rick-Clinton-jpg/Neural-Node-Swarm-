@@ -94,4 +94,4 @@ The Mirror Constitution, Chainmail, and Quorum are separate projects or concepts
 
 ## License
 
-MIT
+PolyForm Noncommercial License 1.0.0. Commercial use is not permitted under this license.
