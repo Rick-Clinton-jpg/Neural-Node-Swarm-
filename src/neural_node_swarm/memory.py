@@ -10,6 +10,56 @@ from .verifier import verify_node_output
 from .consolidation import consolidate
 
 
+class UntrustedMemoryError(ValueError):
+    """Raised when a stored record fails validation on read and cannot be trusted."""
+
+
+_SCHEMA_DIR = Path(__file__).resolve().parents[2] / "schemas"
+_EVENT_VALIDATOR = None
+
+
+def _event_validator():
+    global _EVENT_VALIDATOR
+    if _EVENT_VALIDATOR is None:
+        import jsonschema
+        from referencing import Registry, Resource
+
+        resources = []
+        for name in ("memory_event", "node_output", "verifier_result"):
+            schema = json.loads((_SCHEMA_DIR / f"{name}.schema.json").read_text(encoding="utf-8"))
+            resources.append((schema["$id"], Resource.from_contents(schema)))
+        registry = Registry().with_resources(resources)
+        event_schema = json.loads((_SCHEMA_DIR / "memory_event.schema.json").read_text(encoding="utf-8"))
+        _EVENT_VALIDATOR = jsonschema.Draft202012Validator(event_schema, registry=registry)
+    return _EVENT_VALIDATOR
+
+
+def validate_stored_event(event: Any) -> list[str]:
+    """Return the reasons a stored record cannot be trusted; empty when it can."""
+    if not isinstance(event, dict):
+        return ["record is not an object"]
+    errors = [error.message for error in _event_validator().iter_errors(event)]
+    if errors:
+        return errors
+    recomputed = verify_node_output(event["output"])
+    if recomputed["status"] != "passed":
+        errors.append("stored output no longer passes the node-output verifier")
+    if event["verifier_result"] != recomputed:
+        errors.append("stored verifier_result does not match re-verification")
+    if event["step_id"] != event["output"]["step_id"]:
+        errors.append("event step_id does not match output step_id")
+    return errors
+
+
+def _trusted(events: list[Any]) -> list[dict[str, Any]]:
+    for index, event in enumerate(events):
+        errors = validate_stored_event(event)
+        if errors:
+            event_id = event.get("event_id") if isinstance(event, dict) else None
+            raise UntrustedMemoryError(f"untrusted memory record at index {index} ({event_id!r}): {'; '.join(errors)}")
+    return events
+
+
 def _default_id_source() -> str:
     return f"evt-{uuid.uuid4().hex}"
 
@@ -55,11 +105,20 @@ class MemoryStore:
         return event
 
     def events(self) -> list[dict[str, Any]]:
+        """Return every stored record, validated on read; fail closed on any untrusted record."""
         if self.storage is not None:
-            return self.storage.list_events()
+            return _trusted(self.storage.list_events())
         if not self.path.exists():
             return []
-        return [json.loads(line) for line in self.path.read_text(encoding="utf-8").splitlines() if line]
+        records = []
+        for line in self.path.read_text(encoding="utf-8").splitlines():
+            if not line:
+                continue
+            try:
+                records.append(json.loads(line))
+            except json.JSONDecodeError as error:
+                raise UntrustedMemoryError(f"unparseable memory record: {error}") from error
+        return _trusted(records)
 
     def read_refs(self, refs: list[str]) -> list[dict[str, Any]]:
         """Resolve only explicit, read-only memory references."""

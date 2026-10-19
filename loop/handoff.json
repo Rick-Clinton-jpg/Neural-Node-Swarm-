@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "step_id": "node-2:3",
-  "objective": "Start validate-on-read: make MemoryStore.events() and read_refs() validate every stored record against schemas/memory_event.schema.json and re-run verify_node_output on its output, for both JSONL and SQLite backends. Add tests that a record edited after storage, or one whose output carries a side channel such as notes, fails closed (raises or is excluded) and is never returned as trusted.",
+  "step_id": "node-3:3",
+  "objective": "Start packaged-schemas: verify_node_output (verifier.py) and the memory-event validator (memory.py) load schemas from the repository's schemas/ directory via parents[2], which a built non-editable install does not have. Ship byte-identical copies of the schemas inside the neural_node_swarm package (for example src/neural_node_swarm/schemas/, loaded with importlib.resources) and add tests that every packaged copy is byte-identical to schemas/ and that verification works when only the packaged copies are available. Do not change pytest configuration in pyproject.toml.",
   "success_criteria": [
     "At least one new test fails on the parent commit and passes on the work commit",
     "The full test suite is green",
@@ -9,10 +9,10 @@
   ],
   "required_memory_refs": [
     "ledger:latest",
-    "backlog:item:validate-on-read",
-    "code:src/neural_node_swarm/memory.py",
+    "backlog:item:packaged-schemas",
     "code:src/neural_node_swarm/verifier.py",
-    "code:src/neural_node_swarm/replay.py"
+    "code:src/neural_node_swarm/memory.py",
+    "code:pyproject.toml"
   ],
   "constraints": [
     "No live model calls and no network access in code or tests",
