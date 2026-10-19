@@ -1,21 +1,21 @@
 {
   "schema_version": "1.0",
-  "step_id": "node-6:3",
-  "objective": "Hold the head outside the log: the sealed log still serves a dropped tail and a fully resealed rewrite (a valid prefix; SHA-256 is unkeyed). Add src/neural_node_swarm/lab/anchored_log.py on SealedMemoryStore: each append returns an anchor (event count, head seal) the caller holds outside events.jsonl, and a store opened with an anchor refuses to serve or extend a log whose verified chain is shorter than the anchor or whose seal at that count differs. Add cases anchor_stale_rollback (truncate and present the older matching anchor: pin as a recorded miss) and anchor_forged_head (an anchor matching no prefix), and a six-target catalog under outputs/lab/ keeping the five earlier columns unchanged. Pin that log_tail_truncation and log_reseal_rewrite are missed by sealed and caught by anchored, nothing regresses, and an honest relay passing its anchor forward commits and reads back.",
+  "step_id": "node-7:3",
+  "objective": "Bound reads to the anchor: an anchored store accepts any log that extends its anchor, so a forged event appended past the anchor with a correctly recomputed seal (SHA-256 is unkeyed) is served as episodic:latest. Add src/neural_node_swarm/lab/bounded_log.py on AnchoredMemoryStore: a store opened with an anchor serves events(), read_refs and episodic:latest only from the anchored prefix, refuses to append onto unanchored lines, and its own appends advance the anchor and become readable. Add case anchor_resealed_extension (append one resealed forged line beyond the held anchor) and a seven-target catalog under outputs/lab/ keeping the six earlier columns unchanged. Pin that the extension is missed by anchored and caught by bounded (refused or never served), nothing regresses, anchor_stale_rollback stays a recorded miss, and an honest relay passing its anchor forward commits and reads back.",
   "success_criteria": [
     "At least one new test fails on the parent commit and passes on the work commit",
-    "Tail truncation and reseal rewrite are missed under sealed and caught under anchored, with no regression",
-    "An honest relay passing its anchor forward commits and reads back; stale rollback is a recorded miss"
+    "A resealed forged extension past the anchor is served by anchored and not served by bounded, with no regression",
+    "An honest relay passing its anchor forward commits and reads back; stale rollback stays a recorded miss"
   ],
   "required_memory_refs": [
     "ledger:latest",
-    "code:src/neural_node_swarm/lab/sealed_log.py",
-    "code:src/neural_node_swarm/lab/five_target_catalog.py",
-    "code:outputs/lab/adversarial_catalog_five_targets.json"
+    "code:src/neural_node_swarm/lab/anchored_log.py",
+    "code:src/neural_node_swarm/lab/six_target_catalog.py",
+    "code:outputs/lab/adversarial_catalog_six_targets.json"
   ],
   "constraints": [
     "No live model calls and no network access",
     "Add files only, inside the lab namespace",
-    "Do not change the stock, hardened, budget, ref_binding or sealed classifications already pinned"
+    "Do not change the stock, hardened, budget, ref_binding, sealed or anchored classifications already pinned"
   ]
 }
