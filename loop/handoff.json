@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "step_id": "node-0:3",
+  "objective": "Make event IDs and recorded timestamps come from an injectable ID source and clock, so two appends in the same tick get distinct IDs and a duplicate event ID is rejected by both storage backends.",
+  "success_criteria": [
+    "At least one new test fails on the parent commit and passes on the work commit",
+    "The full test suite is green",
+    "No frozen path changes"
+  ],
+  "required_memory_refs": [
+    "ledger:latest",
+    "backlog:item:deterministic-ids",
+    "code:src/neural_node_swarm/memory.py",
+    "code:src/neural_node_swarm/sqlite_storage.py"
+  ],
+  "constraints": [
+    "No live model calls and no network access in code or tests",
+    "One backlog item per run"
+  ]
+}
