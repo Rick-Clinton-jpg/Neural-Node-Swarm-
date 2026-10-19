@@ -1,21 +1,21 @@
 {
   "schema_version": "1.0",
-  "step_id": "node-4:3",
-  "objective": "Turn to the log itself: every target so far trusts events.jsonl on disk, so a line rewritten or inserted after commit reaches read_refs and successors unverified. Add src/neural_node_swarm/lab/sealed_log.py layered on RefBoundMemoryStore: each committed event carries a SHA-256 chain hash over the previous hash and the event's canonical bytes, and events() and read_refs re-verify the chain and refuse a broken one. Add adversarial cases log_event_rewrite (edit a committed objective on disk), log_event_insert (append a forged line that never passed the verifier), log_event_reorder (swap two lines) and log_tail_truncation (drop the last line, which a chain alone cannot detect: pin it as a recorded miss), and a five-target catalog under outputs/lab/ reusing the four earlier columns unchanged. Pin with tests that the three tamper cases are missed by ref binding and caught by the sealed log, nothing earlier regresses, and an honest relay still commits and reads back.",
+  "step_id": "node-6:3",
+  "objective": "Hold the head outside the log: the sealed log still serves a dropped tail and a fully resealed rewrite (a valid prefix; SHA-256 is unkeyed). Add src/neural_node_swarm/lab/anchored_log.py on SealedMemoryStore: each append returns an anchor (event count, head seal) the caller holds outside events.jsonl, and a store opened with an anchor refuses to serve or extend a log whose verified chain is shorter than the anchor or whose seal at that count differs. Add cases anchor_stale_rollback (truncate and present the older matching anchor: pin as a recorded miss) and anchor_forged_head (an anchor matching no prefix), and a six-target catalog under outputs/lab/ keeping the five earlier columns unchanged. Pin that log_tail_truncation and log_reseal_rewrite are missed by sealed and caught by anchored, nothing regresses, and an honest relay passing its anchor forward commits and reads back.",
   "success_criteria": [
     "At least one new test fails on the parent commit and passes on the work commit",
-    "Rewrite, insert and reorder are missed under ref binding and caught under the sealed log, with no regression",
-    "An honest relay commits and reads back, and tail truncation is pinned as a recorded miss"
+    "Tail truncation and reseal rewrite are missed under sealed and caught under anchored, with no regression",
+    "An honest relay passing its anchor forward commits and reads back; stale rollback is a recorded miss"
   ],
   "required_memory_refs": [
     "ledger:latest",
-    "code:src/neural_node_swarm/lab/ref_binding.py",
-    "code:src/neural_node_swarm/lab/four_target_catalog.py",
-    "code:outputs/lab/adversarial_catalog_four_targets.json"
+    "code:src/neural_node_swarm/lab/sealed_log.py",
+    "code:src/neural_node_swarm/lab/five_target_catalog.py",
+    "code:outputs/lab/adversarial_catalog_five_targets.json"
   ],
   "constraints": [
     "No live model calls and no network access",
     "Add files only, inside the lab namespace",
-    "Do not change the stock, hardened, budget or ref_binding classifications already pinned"
+    "Do not change the stock, hardened, budget, ref_binding or sealed classifications already pinned"
   ]
 }
