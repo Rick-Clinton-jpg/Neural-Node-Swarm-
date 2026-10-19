@@ -1,22 +1,21 @@
 {
   "schema_version": "1.0",
-  "step_id": "node-2:3",
-  "objective": "Add a channel-budget policy as a new lab module (src/neural_node_swarm/lab/channel_budget.py) layered on HardenedMemoryStore: reject Unicode format and control characters (categories Cf, Cc) in every string field, reject duplicate required_memory_refs and cap their count, and cap the item count and total UTF-8 bytes of success_criteria and constraints. Add it as a third target in a new three-target catalog under outputs/lab/ built from the existing stock and hardened probes. Pin with tests that objective_zero_width_payload, memory_ref_amplification, success_criteria_unbounded_channel and constraints_reasoning_smuggle flip to caught, nothing the hardened path catches regresses, an honest three-round relay still commits, and objective_reasoning_smuggle stays a recorded miss. Record per target the maximum free-text bytes a single accepted handoff can carry, so the residual side channel is a measured number rather than a claim.",
+  "step_id": "node-3:3",
+  "objective": "Close the channels the budget only bounds. Add src/neural_node_swarm/lab/ref_binding.py layered on BudgetedMemoryStore: at append, every required_memory_ref must resolve via read_refs against events already committed (unsupported, dangling or unresolvable refs are refused at commit, not only at read), and confidence must be absent or have at most two decimal places. Add two new adversarial cases, memory_ref_payload_channel (16 distinct 256-char refs, accepted by the budget: 4096 bytes) and confidence_mantissa_channel (a float carrying payload bits in its low digits), and a four-target catalog under outputs/lab/ reusing the stock, hardened and budget columns unchanged. Pin with tests that both new cases are missed by budget and caught by ref binding, nothing earlier regresses, an honest relay still commits, and the measured residual (free-text bytes, ref bytes, confidence bits) per target is pinned.",
   "success_criteria": [
     "At least one new test fails on the parent commit and passes on the work commit",
-    "The zero-width, amplification, criteria and constraints cases are caught under the budget policy and no hardened-caught case regresses",
-    "An honest relay commits under the budget policy and the residual channel capacity per target is pinned by a test"
+    "Both new cases are missed under the budget policy and caught under ref binding, with no regression",
+    "An honest relay commits and the residual channel per target, including ref bytes and confidence bits, is pinned"
   ],
   "required_memory_refs": [
     "ledger:latest",
-    "code:src/neural_node_swarm/lab/hardened_store.py",
-    "code:src/neural_node_swarm/lab/hardened_catalog.py",
-    "code:outputs/lab/adversarial_catalog_two_targets.json",
-    "code:src/neural_node_swarm/lab/adversarial_catalog.py"
+    "code:src/neural_node_swarm/lab/channel_budget.py",
+    "code:src/neural_node_swarm/lab/three_target_catalog.py",
+    "code:outputs/lab/adversarial_catalog_three_targets.json"
   ],
   "constraints": [
     "No live model calls and no network access",
     "Add files only, inside the lab namespace",
-    "Do not change the stock or hardened classifications already pinned"
+    "Do not change the stock, hardened or budget classifications already pinned"
   ]
 }
