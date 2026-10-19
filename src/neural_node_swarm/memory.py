@@ -1,31 +1,54 @@
 from __future__ import annotations
 
 import json
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 from .verifier import verify_node_output
 from .consolidation import consolidate
 
 
+def _default_id_source() -> str:
+    return f"evt-{uuid.uuid4().hex}"
+
+
+def _default_clock() -> datetime:
+    return datetime.now(timezone.utc)
+
+
 class MemoryStore:
     """Small append-only episodic store with mechanically derived summaries."""
 
-    def __init__(self, path: str | Path | None = None, *, storage=None):
+    def __init__(
+        self,
+        path: str | Path | None = None,
+        *,
+        storage=None,
+        id_source: Callable[[], str] | None = None,
+        clock: Callable[[], datetime] | None = None,
+    ):
         if path is None and storage is None:
             raise ValueError("path or storage is required")
         self.path = Path(path) if path is not None else None
         self.storage = storage
+        self.id_source = id_source if id_source is not None else _default_id_source
+        self.clock = clock if clock is not None else _default_clock
 
     def append(self, *, node_id: str, round: int, objective: str, output: Any) -> dict[str, Any]:
         result = verify_node_output(output)
         if result["status"] != "passed":
             raise ValueError("unverified output cannot be committed")
-        event = {"schema_version": "1.0", "event_id": f"evt-{datetime.now(timezone.utc).timestamp()}", "step_id": output["step_id"], "node_id": node_id, "round": round, "objective": objective, "output": output, "verifier_result": result, "recorded_at": datetime.now(timezone.utc).isoformat()}
+        event_id = self.id_source()
+        if not isinstance(event_id, str) or not event_id:
+            raise ValueError("id_source must return a non-empty string")
+        event = {"schema_version": "1.0", "event_id": event_id, "step_id": output["step_id"], "node_id": node_id, "round": round, "objective": objective, "output": output, "verifier_result": result, "recorded_at": self.clock().isoformat()}
         if self.storage is not None:
             self.storage.append_event(event)
         else:
+            if any(existing["event_id"] == event_id for existing in self.events()):
+                raise ValueError(f"duplicate event_id: {event_id}")
             self.path.parent.mkdir(parents=True, exist_ok=True)
             with self.path.open("a", encoding="utf-8") as stream:
                 stream.write(json.dumps(event, sort_keys=True) + "\n")

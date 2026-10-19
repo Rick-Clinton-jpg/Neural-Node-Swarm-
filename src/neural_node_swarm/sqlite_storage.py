@@ -21,8 +21,11 @@ class SQLiteStorage:
 
     def append_event(self, event: dict[str, Any]) -> None:
         payload = json.dumps(event, sort_keys=True)
-        with self._connect() as connection:
-            connection.execute("INSERT INTO events(event_id, recorded_at, payload) VALUES (?, ?, ?)", (event["event_id"], event["recorded_at"], payload))
+        try:
+            with self._connect() as connection:
+                connection.execute("INSERT INTO events(event_id, recorded_at, payload) VALUES (?, ?, ?)", (event["event_id"], event["recorded_at"], payload))
+        except sqlite3.IntegrityError as error:
+            raise ValueError(f"duplicate event_id: {event['event_id']}") from error
 
     def list_events(self) -> list[dict[str, Any]]:
         with self._connect() as connection:
