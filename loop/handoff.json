@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "step_id": "node-4:3",
-  "objective": "Finish packaged-schemas: schemas now ship as src/neural_node_swarm/schemas/*.json (package-data in pyproject.toml), byte-identity and no-checkout verification are tested in tests/test_packaged_schemas.py. Remaining gap: a real built wheel is not exercised. project.license is a bare SPDX string, which setuptools older than 77 rejects, so raise build-system requires to setuptools>=77 and add a new test that checks the build requirement and that every packaged schema file matches the package-data glob (no network, no build in tests). Then move the handoff to task-verifier. Do not change pytest configuration in pyproject.toml.",
+  "step_id": "node-5:3",
+  "objective": "Start task-verifier: pick a narrow deterministic task with known ground truth (for example, sorting or summing a fixed integer list carried in the node payload) and add a task-specific verifier module under src/neural_node_swarm/ that checks a relay's final output against the ground truth, separate from the schema verifier. Write a new test file first with a correct output that passes and negative controls: well-formed node outputs (passing verify_node_output) whose answer is wrong, missing or off by one, all rejected. Keep it pure and offline.",
   "success_criteria": [
     "At least one new test fails on the parent commit and passes on the work commit",
     "The full test suite is green",
@@ -9,10 +9,9 @@
   ],
   "required_memory_refs": [
     "ledger:latest",
-    "backlog:item:packaged-schemas",
-    "code:src/neural_node_swarm/schemas/__init__.py",
+    "backlog:item:task-verifier",
     "code:src/neural_node_swarm/verifier.py",
-    "code:pyproject.toml"
+    "code:src/neural_node_swarm/orchestrator.py"
   ],
   "constraints": [
     "No live model calls and no network access in code or tests",
