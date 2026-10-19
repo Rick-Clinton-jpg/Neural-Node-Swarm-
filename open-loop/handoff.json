@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "step_id": "node-0:3",
+  "objective": "Start an adversarial node catalog in src/neural_node_swarm/lab/: hostile node and memory behaviours run against the unmodified runtime (verifier, MemoryStore, Orchestrator), each classified deterministically as caught or missed by the current trust boundary. Begin with side channels that fit the closed schema, such as reasoning smuggled through objective, success_criteria, constraints or step_id, and with memory-reference abuse. Pin each case's classification with a test and write the results as JSON under outputs/lab/. A miss is a finding, not a failure of the run.",
+  "success_criteria": [
+    "At least one new test fails on the parent commit and passes on the work commit",
+    "Each catalogued case has a deterministic caught or missed classification",
+    "Only files inside the lab namespace are added"
+  ],
+  "required_memory_refs": [
+    "ledger:latest",
+    "code:src/neural_node_swarm/verifier.py",
+    "code:src/neural_node_swarm/memory.py",
+    "code:src/neural_node_swarm/orchestrator.py"
+  ],
+  "constraints": [
+    "No live model calls and no network access",
+    "Add files only, inside the lab namespace"
+  ]
+}
