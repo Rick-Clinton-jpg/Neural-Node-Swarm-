@@ -1,22 +1,22 @@
 {
   "schema_version": "1.0",
-  "step_id": "node-1:3",
-  "objective": "Build a hardened commit path as a new lab module (src/neural_node_swarm/lab/hardened_store.py) that wraps the unmodified MemoryStore: canonicalize each output to plain JSON types (serialize once, parse the bytes back) before verifying, verify and commit exactly those canonical bytes, and bind step_id to the committing node_id and round, rejecting forged or replayed step_ids. Then extend the adversarial catalog with a second target so each case in outputs/lab/adversarial_catalog.json is classified against both the stock runtime and the hardened path. Pin with tests that dict_subclass_toctou, orchestrator_step_id_forgery and orchestrator_step_id_replay flip to caught under the hardened path, every case caught by the stock runtime stays caught, and the stock classifications are unchanged. Leave the text side channels (objective, criteria, constraints, zero-width, amplification) as recorded misses unless a deterministic check can close one.",
+  "step_id": "node-2:3",
+  "objective": "Add a channel-budget policy as a new lab module (src/neural_node_swarm/lab/channel_budget.py) layered on HardenedMemoryStore: reject Unicode format and control characters (categories Cf, Cc) in every string field, reject duplicate required_memory_refs and cap their count, and cap the item count and total UTF-8 bytes of success_criteria and constraints. Add it as a third target in a new three-target catalog under outputs/lab/ built from the existing stock and hardened probes. Pin with tests that objective_zero_width_payload, memory_ref_amplification, success_criteria_unbounded_channel and constraints_reasoning_smuggle flip to caught, nothing the hardened path catches regresses, an honest three-round relay still commits, and objective_reasoning_smuggle stays a recorded miss. Record per target the maximum free-text bytes a single accepted handoff can carry, so the residual side channel is a measured number rather than a claim.",
   "success_criteria": [
     "At least one new test fails on the parent commit and passes on the work commit",
-    "The TOCTOU, forgery and replay cases are caught by the hardened path and still missed by the stock runtime",
-    "No case caught by the stock runtime is missed by the hardened path"
+    "The zero-width, amplification, criteria and constraints cases are caught under the budget policy and no hardened-caught case regresses",
+    "An honest relay commits under the budget policy and the residual channel capacity per target is pinned by a test"
   ],
   "required_memory_refs": [
     "ledger:latest",
-    "code:src/neural_node_swarm/lab/adversarial_catalog.py",
-    "code:outputs/lab/adversarial_catalog.json",
-    "code:src/neural_node_swarm/memory.py",
-    "code:src/neural_node_swarm/orchestrator.py"
+    "code:src/neural_node_swarm/lab/hardened_store.py",
+    "code:src/neural_node_swarm/lab/hardened_catalog.py",
+    "code:outputs/lab/adversarial_catalog_two_targets.json",
+    "code:src/neural_node_swarm/lab/adversarial_catalog.py"
   ],
   "constraints": [
     "No live model calls and no network access",
     "Add files only, inside the lab namespace",
-    "Do not change the stock-runtime classifications already pinned"
+    "Do not change the stock or hardened classifications already pinned"
   ]
 }
