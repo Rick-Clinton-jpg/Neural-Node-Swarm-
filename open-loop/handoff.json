@@ -1,20 +1,22 @@
 {
   "schema_version": "1.0",
-  "step_id": "node-0:3",
-  "objective": "Start an adversarial node catalog in src/neural_node_swarm/lab/: hostile node and memory behaviours run against the unmodified runtime (verifier, MemoryStore, Orchestrator), each classified deterministically as caught or missed by the current trust boundary. Begin with side channels that fit the closed schema, such as reasoning smuggled through objective, success_criteria, constraints or step_id, and with memory-reference abuse. Pin each case's classification with a test and write the results as JSON under outputs/lab/. A miss is a finding, not a failure of the run.",
+  "step_id": "node-1:3",
+  "objective": "Build a hardened commit path as a new lab module (src/neural_node_swarm/lab/hardened_store.py) that wraps the unmodified MemoryStore: canonicalize each output to plain JSON types (serialize once, parse the bytes back) before verifying, verify and commit exactly those canonical bytes, and bind step_id to the committing node_id and round, rejecting forged or replayed step_ids. Then extend the adversarial catalog with a second target so each case in outputs/lab/adversarial_catalog.json is classified against both the stock runtime and the hardened path. Pin with tests that dict_subclass_toctou, orchestrator_step_id_forgery and orchestrator_step_id_replay flip to caught under the hardened path, every case caught by the stock runtime stays caught, and the stock classifications are unchanged. Leave the text side channels (objective, criteria, constraints, zero-width, amplification) as recorded misses unless a deterministic check can close one.",
   "success_criteria": [
     "At least one new test fails on the parent commit and passes on the work commit",
-    "Each catalogued case has a deterministic caught or missed classification",
-    "Only files inside the lab namespace are added"
+    "The TOCTOU, forgery and replay cases are caught by the hardened path and still missed by the stock runtime",
+    "No case caught by the stock runtime is missed by the hardened path"
   ],
   "required_memory_refs": [
     "ledger:latest",
-    "code:src/neural_node_swarm/verifier.py",
+    "code:src/neural_node_swarm/lab/adversarial_catalog.py",
+    "code:outputs/lab/adversarial_catalog.json",
     "code:src/neural_node_swarm/memory.py",
     "code:src/neural_node_swarm/orchestrator.py"
   ],
   "constraints": [
     "No live model calls and no network access",
-    "Add files only, inside the lab namespace"
+    "Add files only, inside the lab namespace",
+    "Do not change the stock-runtime classifications already pinned"
   ]
 }
