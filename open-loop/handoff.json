@@ -1,21 +1,21 @@
 {
   "schema_version": "1.0",
-  "step_id": "node-3:3",
-  "objective": "Close the channels the budget only bounds. Add src/neural_node_swarm/lab/ref_binding.py layered on BudgetedMemoryStore: at append, every required_memory_ref must resolve via read_refs against events already committed (unsupported, dangling or unresolvable refs are refused at commit, not only at read), and confidence must be absent or have at most two decimal places. Add two new adversarial cases, memory_ref_payload_channel (16 distinct 256-char refs, accepted by the budget: 4096 bytes) and confidence_mantissa_channel (a float carrying payload bits in its low digits), and a four-target catalog under outputs/lab/ reusing the stock, hardened and budget columns unchanged. Pin with tests that both new cases are missed by budget and caught by ref binding, nothing earlier regresses, an honest relay still commits, and the measured residual (free-text bytes, ref bytes, confidence bits) per target is pinned.",
+  "step_id": "node-4:3",
+  "objective": "Turn to the log itself: every target so far trusts events.jsonl on disk, so a line rewritten or inserted after commit reaches read_refs and successors unverified. Add src/neural_node_swarm/lab/sealed_log.py layered on RefBoundMemoryStore: each committed event carries a SHA-256 chain hash over the previous hash and the event's canonical bytes, and events() and read_refs re-verify the chain and refuse a broken one. Add adversarial cases log_event_rewrite (edit a committed objective on disk), log_event_insert (append a forged line that never passed the verifier), log_event_reorder (swap two lines) and log_tail_truncation (drop the last line, which a chain alone cannot detect: pin it as a recorded miss), and a five-target catalog under outputs/lab/ reusing the four earlier columns unchanged. Pin with tests that the three tamper cases are missed by ref binding and caught by the sealed log, nothing earlier regresses, and an honest relay still commits and reads back.",
   "success_criteria": [
     "At least one new test fails on the parent commit and passes on the work commit",
-    "Both new cases are missed under the budget policy and caught under ref binding, with no regression",
-    "An honest relay commits and the residual channel per target, including ref bytes and confidence bits, is pinned"
+    "Rewrite, insert and reorder are missed under ref binding and caught under the sealed log, with no regression",
+    "An honest relay commits and reads back, and tail truncation is pinned as a recorded miss"
   ],
   "required_memory_refs": [
     "ledger:latest",
-    "code:src/neural_node_swarm/lab/channel_budget.py",
-    "code:src/neural_node_swarm/lab/three_target_catalog.py",
-    "code:outputs/lab/adversarial_catalog_three_targets.json"
+    "code:src/neural_node_swarm/lab/ref_binding.py",
+    "code:src/neural_node_swarm/lab/four_target_catalog.py",
+    "code:outputs/lab/adversarial_catalog_four_targets.json"
   ],
   "constraints": [
     "No live model calls and no network access",
     "Add files only, inside the lab namespace",
-    "Do not change the stock, hardened or budget classifications already pinned"
+    "Do not change the stock, hardened, budget or ref_binding classifications already pinned"
   ]
 }
