@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "step_id": "node-3:3",
-  "objective": "Start packaged-schemas: verify_node_output (verifier.py) and the memory-event validator (memory.py) load schemas from the repository's schemas/ directory via parents[2], which a built non-editable install does not have. Ship byte-identical copies of the schemas inside the neural_node_swarm package (for example src/neural_node_swarm/schemas/, loaded with importlib.resources) and add tests that every packaged copy is byte-identical to schemas/ and that verification works when only the packaged copies are available. Do not change pytest configuration in pyproject.toml.",
+  "step_id": "node-4:3",
+  "objective": "Finish packaged-schemas: schemas now ship as src/neural_node_swarm/schemas/*.json (package-data in pyproject.toml), byte-identity and no-checkout verification are tested in tests/test_packaged_schemas.py. Remaining gap: a real built wheel is not exercised. project.license is a bare SPDX string, which setuptools older than 77 rejects, so raise build-system requires to setuptools>=77 and add a new test that checks the build requirement and that every packaged schema file matches the package-data glob (no network, no build in tests). Then move the handoff to task-verifier. Do not change pytest configuration in pyproject.toml.",
   "success_criteria": [
     "At least one new test fails on the parent commit and passes on the work commit",
     "The full test suite is green",
@@ -10,8 +10,8 @@
   "required_memory_refs": [
     "ledger:latest",
     "backlog:item:packaged-schemas",
+    "code:src/neural_node_swarm/schemas/__init__.py",
     "code:src/neural_node_swarm/verifier.py",
-    "code:src/neural_node_swarm/memory.py",
     "code:pyproject.toml"
   ],
   "constraints": [

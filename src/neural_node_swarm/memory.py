@@ -8,13 +8,13 @@ from typing import Any, Callable
 
 from .verifier import verify_node_output
 from .consolidation import consolidate
+from .schemas import load_schema
 
 
 class UntrustedMemoryError(ValueError):
     """Raised when a stored record fails validation on read and cannot be trusted."""
 
 
-_SCHEMA_DIR = Path(__file__).resolve().parents[2] / "schemas"
 _EVENT_VALIDATOR = None
 
 
@@ -26,10 +26,10 @@ def _event_validator():
 
         resources = []
         for name in ("memory_event", "node_output", "verifier_result"):
-            schema = json.loads((_SCHEMA_DIR / f"{name}.schema.json").read_text(encoding="utf-8"))
+            schema = load_schema(name)
             resources.append((schema["$id"], Resource.from_contents(schema)))
         registry = Registry().with_resources(resources)
-        event_schema = json.loads((_SCHEMA_DIR / "memory_event.schema.json").read_text(encoding="utf-8"))
+        event_schema = load_schema("memory_event")
         _EVENT_VALIDATOR = jsonschema.Draft202012Validator(event_schema, registry=registry)
     return _EVENT_VALIDATOR
 

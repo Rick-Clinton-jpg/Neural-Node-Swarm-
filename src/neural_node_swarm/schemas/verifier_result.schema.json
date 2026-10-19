@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neural-node-swarm.dev/schemas/verifier-result.schema.json",
+  "title": "Verifier Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "step_id", "status", "checks"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "step_id": {"type": "string"},
+    "status": {"enum": ["passed", "failed", "rejected"]},
+    "checks": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["name", "passed"], "properties": {"name": {"type": "string", "minLength": 1}, "passed": {"type": "boolean"}, "detail": {"type": "string"}}}},
+    "verifier_version": {"type": "string"}
+  }
+}
