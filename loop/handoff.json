@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "step_id": "node-1:3",
-  "objective": "Start runtime-replay: let Orchestrator accept a MemoryStore built with injected id_source and clock, add a replay function that re-runs a relay from its episodic log and compares the regenerated event stream byte-for-byte, and add a test that a log edited after the run is reported as not replaying.",
+  "step_id": "node-2:3",
+  "objective": "Start validate-on-read: make MemoryStore.events() and read_refs() validate every stored record against schemas/memory_event.schema.json and re-run verify_node_output on its output, for both JSONL and SQLite backends. Add tests that a record edited after storage, or one whose output carries a side channel such as notes, fails closed (raises or is excluded) and is never returned as trusted.",
   "success_criteria": [
     "At least one new test fails on the parent commit and passes on the work commit",
     "The full test suite is green",
@@ -9,9 +9,10 @@
   ],
   "required_memory_refs": [
     "ledger:latest",
-    "backlog:item:runtime-replay",
-    "code:src/neural_node_swarm/orchestrator.py",
-    "code:src/neural_node_swarm/memory.py"
+    "backlog:item:validate-on-read",
+    "code:src/neural_node_swarm/memory.py",
+    "code:src/neural_node_swarm/verifier.py",
+    "code:src/neural_node_swarm/replay.py"
   ],
   "constraints": [
     "No live model calls and no network access in code or tests",
