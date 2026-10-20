@@ -1,17 +1,17 @@
 {
   "schema_version": "1.0",
-  "step_id": "node-11:3",
-  "objective": "Measure what shape costs honest relays: ShapedMemoryStore caps objective at 400 chars, 3 sentences and a 0.5 compression ratio, but every objective this loop handed on is longer. Copy each objective_out recorded in open-loop/ledger.jsonl through run 11 into a fixture under tests/lab/ (read-only copy; never write the ledger). Add src/neural_node_swarm/lab/shape_calibration.py that replays each through measure_objective and shape_violations and reports per-objective measurements and the false-refusal count, plus a CalibratedShapedMemoryStore whose limits are the tightest values that accept every fixture objective. Write the measurements under outputs/lab/. Pin the false-refusal count of the 400/3/0.5 limits, that every fixture objective commits under the calibrated store, and whether objective_reasoning_smuggle and an honest relay are still caught and served under it, so the trade between channel width and honest use is a measured number.",
+  "step_id": "node-12:3",
+  "objective": "Price the channel the compression limit leaves open: on the ten honest handoffs of runs 1-11, 400/3/0.5 refuses all ten (chars and sentences) while compression alone refuses none and still catches objective_reasoning_smuggle. Add src/neural_node_swarm/lab/eleven_target_catalog.py with a compression_shaped target (CalibratedShapedMemoryStore under COMPRESSION_ONLY_LIMITS) keeping the ten earlier columns unchanged, plus case objective_long_unique_trace: a non-repeating trace of 990 chars inside the verifier cap. Pin that compression_shaped flips the same cases from quorum as shaped, that the long unique trace is caught by shaped and missed by compression_shaped, and that every fixture objective in tests/lab commits under compression_shaped, so the width it reopens is a measured number.",
   "success_criteria": [
     "At least one new test fails on the parent commit and passes on the work commit",
-    "The false-refusal count of the 400/3/0.5 shape limits on the recorded honest objectives is pinned",
-    "Every fixture objective commits under the calibrated store, and whether objective_reasoning_smuggle is caught there is pinned"
+    "compression_shaped regresses nothing against quorum and flips the same cases as shaped",
+    "objective_long_unique_trace is pinned as caught by shaped and missed by compression_shaped"
   ],
   "required_memory_refs": [
     "ledger:latest",
-    "code:src/neural_node_swarm/lab/objective_shape.py",
-    "code:src/neural_node_swarm/lab/ten_target_catalog.py",
-    "code:outputs/lab/adversarial_catalog_ten_targets.json"
+    "code:src/neural_node_swarm/lab/shape_calibration.py",
+    "code:outputs/lab/shape_calibration_runs_1_11.json",
+    "code:src/neural_node_swarm/lab/ten_target_catalog.py"
   ],
   "constraints": [
     "No live model calls and no network access",

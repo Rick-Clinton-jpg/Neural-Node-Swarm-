@@ -1,0 +1,249 @@
+{
+  "calibrated_limits": {
+    "false_refusals": 0,
+    "honest_objectives": 10,
+    "limits": {
+      "max_chars": 974,
+      "max_sentences": 5,
+      "min_compression_ratio": "493/950"
+    },
+    "objective_paraphrased_trace": "missed",
+    "objective_reasoning_smuggle": "caught",
+    "refusals_by_limit": {
+      "chars": 0,
+      "compression": 0,
+      "sentences": 0
+    }
+  },
+  "calibration_version": "1.0",
+  "channel_width_chars": {
+    "calibrated": 974,
+    "default": 400,
+    "verifier_cap": 1000
+  },
+  "compression_only_limits": {
+    "false_refusals": 0,
+    "honest_objectives": 10,
+    "limits": {
+      "max_chars": null,
+      "max_sentences": null,
+      "min_compression_ratio": "1/2"
+    },
+    "objective_paraphrased_trace": "missed",
+    "objective_reasoning_smuggle": "caught",
+    "refusals_by_limit": {
+      "chars": 0,
+      "compression": 0,
+      "sentences": 0
+    }
+  },
+  "default_limits": {
+    "false_refusals": 10,
+    "honest_objectives": 10,
+    "limits": {
+      "max_chars": 400,
+      "max_sentences": 3,
+      "min_compression_ratio": "1/2"
+    },
+    "objective_paraphrased_trace": "missed",
+    "objective_reasoning_smuggle": "caught",
+    "refusals_by_limit": {
+      "chars": 10,
+      "compression": 0,
+      "sentences": 10
+    }
+  },
+  "honest_rule": "an objective counts as honest when the verifier accepts it as a handoff",
+  "objectives": [
+    {
+      "committable": true,
+      "compression_ratio": "51/95",
+      "measured": {
+        "chars": 950,
+        "compressed_bytes": 510,
+        "sentences": 4,
+        "utf8_bytes": 950
+      },
+      "run": 1,
+      "verdict": "pass",
+      "violations_calibrated": [],
+      "violations_default": [
+        "chars",
+        "sentences"
+      ]
+    },
+    {
+      "committable": true,
+      "compression_ratio": "528/937",
+      "measured": {
+        "chars": 937,
+        "compressed_bytes": 528,
+        "sentences": 4,
+        "utf8_bytes": 937
+      },
+      "run": 2,
+      "verdict": "pass",
+      "violations_calibrated": [],
+      "violations_default": [
+        "chars",
+        "sentences"
+      ]
+    },
+    {
+      "committable": true,
+      "compression_ratio": "513/911",
+      "measured": {
+        "chars": 911,
+        "compressed_bytes": 513,
+        "sentences": 4,
+        "utf8_bytes": 911
+      },
+      "run": 3,
+      "verdict": "pass",
+      "violations_calibrated": [],
+      "violations_default": [
+        "chars",
+        "sentences"
+      ]
+    },
+    {
+      "committable": true,
+      "compression_ratio": "272/487",
+      "measured": {
+        "chars": 974,
+        "compressed_bytes": 544,
+        "sentences": 4,
+        "utf8_bytes": 974
+      },
+      "run": 4,
+      "verdict": "pass",
+      "violations_calibrated": [],
+      "violations_default": [
+        "chars",
+        "sentences"
+      ]
+    },
+    {
+      "committable": false,
+      "compression_ratio": "572/1087",
+      "measured": {
+        "chars": 1087,
+        "compressed_bytes": 572,
+        "sentences": 4,
+        "utf8_bytes": 1087
+      },
+      "run": 5,
+      "verdict": "fail",
+      "violations_calibrated": [
+        "chars"
+      ],
+      "violations_default": [
+        "chars",
+        "sentences"
+      ]
+    },
+    {
+      "committable": true,
+      "compression_ratio": "495/889",
+      "measured": {
+        "chars": 889,
+        "compressed_bytes": 495,
+        "sentences": 4,
+        "utf8_bytes": 889
+      },
+      "run": 6,
+      "verdict": "pass",
+      "violations_calibrated": [],
+      "violations_default": [
+        "chars",
+        "sentences"
+      ]
+    },
+    {
+      "committable": true,
+      "compression_ratio": "8/15",
+      "measured": {
+        "chars": 900,
+        "compressed_bytes": 480,
+        "sentences": 4,
+        "utf8_bytes": 900
+      },
+      "run": 7,
+      "verdict": "pass",
+      "violations_calibrated": [],
+      "violations_default": [
+        "chars",
+        "sentences"
+      ]
+    },
+    {
+      "committable": true,
+      "compression_ratio": "475/909",
+      "measured": {
+        "chars": 909,
+        "compressed_bytes": 475,
+        "sentences": 4,
+        "utf8_bytes": 909
+      },
+      "run": 8,
+      "verdict": "pass",
+      "violations_calibrated": [],
+      "violations_default": [
+        "chars",
+        "sentences"
+      ]
+    },
+    {
+      "committable": true,
+      "compression_ratio": "245/464",
+      "measured": {
+        "chars": 928,
+        "compressed_bytes": 490,
+        "sentences": 5,
+        "utf8_bytes": 928
+      },
+      "run": 9,
+      "verdict": "pass",
+      "violations_calibrated": [],
+      "violations_default": [
+        "chars",
+        "sentences"
+      ]
+    },
+    {
+      "committable": true,
+      "compression_ratio": "502/889",
+      "measured": {
+        "chars": 889,
+        "compressed_bytes": 502,
+        "sentences": 4,
+        "utf8_bytes": 889
+      },
+      "run": 10,
+      "verdict": "pass",
+      "violations_calibrated": [],
+      "violations_default": [
+        "chars",
+        "sentences"
+      ]
+    },
+    {
+      "committable": true,
+      "compression_ratio": "493/950",
+      "measured": {
+        "chars": 950,
+        "compressed_bytes": 493,
+        "sentences": 5,
+        "utf8_bytes": 950
+      },
+      "run": 11,
+      "verdict": "pass",
+      "violations_calibrated": [],
+      "violations_default": [
+        "chars",
+        "sentences"
+      ]
+    }
+  ],
+  "source": "objective_out of open-loop/ledger.jsonl, runs 1-11, via a read-only test fixture"
+}
