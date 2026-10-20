@@ -17,5 +17,8 @@ neural-node-swarm = "neural_node_swarm.cli:main"
 test = ["pytest>=8"]
 validation = ["jsonschema>=4.20"]
 
+[tool.setuptools.package-data]
+neural_node_swarm = ["schemas/*.json"]
+
 [tool.pytest.ini_options]
 pythonpath = ["src"]
