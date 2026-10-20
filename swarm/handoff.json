@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "step_id": "wave-3:handoff",
+  "objective": "Closed in wave 3: validate-on-read, multi-hop-matched-cost. No backlog items remain; the backlog is complete and the gate should write swarm/STOP. Nothing is left for a recruiter to post. Watch for, if work resumes: the validate-on-read hash chain (memory.chain_link/verify_chain, JSONL .chain sidecar and SQLite event_chain table) is unkeyed, so an attacker who can write both the log and the chain can recompute it, and dropping the last record together with its last link is not detected; a keyed or externally anchored chain head would close that. multi_hop_matched_cost is a deterministic mechanism experiment: abstentions are reported but are 0 in every case, corrupted evidence defeats both gated policies, and matched cost means one evidence check per write for promotion and gated_shared, not a general equivalence claim.",
+  "success_criteria": [
+    "Every backlog item is closed and each closed item met its full acceptance text",
+    "The suite the gate measures passes (148 tests at the end of wave 3)",
+    "No frozen path changed across the loop"
+  ],
+  "required_memory_refs": [
+    "ledger:latest",
+    "backlog:done",
+    "code:src/neural_node_swarm/memory.py",
+    "code:src/neural_node_swarm/sqlite_storage.py",
+    "code:src/neural_node_swarm/multi_hop_matched_cost.py",
+    "code:tests/test_validate_on_read_integrity_chain_w3t1.py",
+    "code:tests/test_multi_hop_matched_cost_w3t2.py"
+  ],
+  "constraints": [
+    "Do not reopen closed items",
+    "No live model calls and no network access in code or tests",
+    "Keep src/neural_node_swarm/schemas/ byte-identical to schemas/ and do not edit any existing schema file"
+  ]
+}

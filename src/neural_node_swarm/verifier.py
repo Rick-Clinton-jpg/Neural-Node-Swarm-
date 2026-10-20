@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from importlib import resources
 import json
-from pathlib import Path
 from typing import Any
 
 
@@ -18,8 +18,8 @@ class Check:
 
 
 def verify_node_output(output: Any) -> dict[str, Any]:
-    schema_path = Path(__file__).resolve().parents[2] / "schemas" / "node_output.schema.json"
-    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    schema_file = resources.files("neural_node_swarm").joinpath("schemas").joinpath("node_output.schema.json")
+    schema = json.loads(schema_file.read_text(encoding="utf-8"))
     import jsonschema
     validator = jsonschema.Draft202012Validator(schema)
     schema_errors = sorted(validator.iter_errors(output), key=lambda error: list(error.path))
