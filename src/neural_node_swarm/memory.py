@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import uuid
 from datetime import datetime, timezone
@@ -47,6 +48,25 @@ def validate_event(event: Any) -> dict[str, Any]:
     return event
 
 
+def chain_link(previous: str, event: dict[str, Any]) -> str:
+    """Next link of the per-store SHA-256 hash chain that binds each record's exact content and order."""
+    material = previous + "\n" + json.dumps(event, sort_keys=True)
+    return hashlib.sha256(material.encode("utf-8")).hexdigest()
+
+
+def verify_chain(records: list[dict[str, Any]], links: list[tuple[str, str]]) -> None:
+    """Fail closed unless ``links`` is exactly the hash chain over ``records``, in order."""
+    if len(records) != len(links):
+        raise VerificationError(f"memory chain covers {len(links)} records but {len(records)} are stored")
+    previous = ""
+    for position, (record, (event_id, link)) in enumerate(zip(records, links)):
+        if record.get("event_id") != event_id:
+            raise VerificationError(f"memory record {position} is out of order or replaced")
+        previous = chain_link(previous, record)
+        if previous != link:
+            raise VerificationError(f"memory record {position} does not match its chain link")
+
+
 def default_id_source() -> str:
     """Clock-independent IDs, distinct even when the clock is frozen."""
     return f"evt-{uuid.uuid4().hex}"
@@ -90,19 +110,45 @@ class MemoryStore:
             raise ValueError(f"duplicate event_id: {event_id}")
         recorded_at = self.clock().isoformat()
         event = {"schema_version": "1.0", "event_id": event_id, "step_id": output["step_id"], "node_id": node_id, "round": round, "objective": objective, "output": output, "verifier_result": result, "recorded_at": recorded_at}
+        links = self._chain_links()
+        link = chain_link(links[-1][1] if links else "", event)
         if self.storage is not None:
-            self.storage.append_event(event)
+            self.storage.append_event(event, chain_link=link)
         else:
             self.path.parent.mkdir(parents=True, exist_ok=True)
             with self.path.open("a", encoding="utf-8") as stream:
                 stream.write(json.dumps(event, sort_keys=True) + "\n")
+            with self.chain_path.open("a", encoding="utf-8") as stream:
+                stream.write(f"{event_id} {link}\n")
         return event
 
+    @property
+    def chain_path(self) -> Path | None:
+        """JSONL sidecar holding one ``<event_id> <link>`` line per record; the log format is unchanged."""
+        return self.path.with_name(self.path.name + ".chain") if self.path is not None else None
+
+    def _chain_links(self) -> list[tuple[str, str]]:
+        if self.storage is not None:
+            list_links = getattr(self.storage, "list_chain_links", None)
+            if list_links is None:
+                raise VerificationError("storage cannot keep the memory hash chain")
+            return [(str(event_id), str(link)) for event_id, link in list_links()]
+        if not self.chain_path.exists():
+            return []
+        links = []
+        for line in self.chain_path.read_text(encoding="utf-8").splitlines():
+            parts = line.split(" ")
+            if len(parts) != 2 or not all(parts):
+                raise VerificationError("memory chain contains an unreadable link")
+            links.append((parts[0], parts[1]))
+        return links
+
     def events(self) -> list[dict[str, Any]]:
+        links = self._chain_links()
         if self.storage is not None:
             records = self.storage.list_events()
         elif not self.path.exists():
-            return []
+            records = []
         else:
             records = []
             for line in self.path.read_text(encoding="utf-8").splitlines():
@@ -114,6 +160,7 @@ class MemoryStore:
                     raise VerificationError("memory log contains an unreadable record") from error
         for record in records:
             validate_event(record)
+        verify_chain(records, links)
         return records
 
     def read_refs(self, refs: list[str]) -> list[dict[str, Any]]:
