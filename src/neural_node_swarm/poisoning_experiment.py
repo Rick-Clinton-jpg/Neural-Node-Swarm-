@@ -174,6 +174,127 @@ def governed_runtime_experiment(directory, successors: int = 6) -> dict:
                       for name, poison, fault in scenarios]}
 
 
+class SharedGatedMemory:
+    """Shared memory whose writes are unchecked; each read checks evidence once.
+
+    The latest write is what a successor sees. If it disagrees with the evidence
+    the successor abstains (None). Used through Orchestrator.run_chain's
+    ``inheritance`` hook, so it exposes ``inherited(run_id, region)``.
+    """
+
+    def __init__(self, evidence_at):
+        self.writes, self.checks, self.evidence_at, self.generation = [], 0, evidence_at, 0
+
+    def write(self, value):
+        self.writes.append(value)
+
+    def inherited(self, run_id, region):
+        self.generation += 1
+        if not self.writes:
+            return None
+        self.checks += 1
+        value = self.writes[-1]
+        return value if self.evidence_at(self.generation) == value else None
+
+
+MULTI_HOP_DOES_NOT_SHOW = [
+    "Only one region, one poisoned generation and one evidence record are modeled.",
+    "Matched cost counts evidence checks made by successors; the trusted seed "
+    "promotion before the chain is not counted.",
+    "When the evidence itself is corrupted both policies are contaminated; "
+    "neither check detects a consistent lie.",
+    "Workers are deterministic readers, not models; this says nothing about model behavior.",
+    "Abstention is not recovery: a successor that abstains does not restore the true value.",
+]
+
+
+def run_multi_hop(directory, *, policy, inject_at, successors=6, evidence_fault=False):
+    """Inject a poisoned write at successor generation ``inject_at`` (>1).
+
+    Each generation runs as an Orchestrator.run_chain node, reads only through
+    the policy's inheritance boundary, and writes back what it read (the
+    poisoned generation writes the poison). Both policies spend exactly one
+    evidence check per successor generation: ``promotion`` checks on write,
+    ``shared_gated`` checks on read. With ``evidence_fault`` the evidence record
+    is corrupted to the poison from generation ``inject_at`` on.
+    """
+    if policy not in {"promotion", "shared_gated"}:
+        raise ValueError("unknown policy")
+    if type(successors) is not int or successors < 1:
+        raise ValueError("successors must be a positive integer")
+    if type(inject_at) is not int or not 2 <= inject_at <= successors:
+        raise ValueError("inject_at must be an integer between 2 and successors")
+    directory = Path(directory)
+    directory.mkdir(parents=True, exist_ok=True)
+    truth, poison, run_id, region = 10, 90, "multi-hop-v1", "hand"
+
+    def evidence_at(generation):
+        return poison if evidence_fault and generation >= inject_at else truth
+
+    checks_made = [0]
+    if policy == "promotion":
+        boundary = InheritanceStore(directory / "inheritance.db")
+        seed = boundary.accept(run_id, region, truth, "record:hand")
+        boundary.promote(run_id, region, seed["id"], {"record:hand": truth})
+
+        def write(generation, value):
+            active = boundary.accept(run_id, region, value, "record:hand")
+            boundary.promote(run_id, region, active["id"], {"record:hand": evidence_at(generation)})
+            checks_made[0] += 1
+    else:
+        boundary = SharedGatedMemory(evidence_at)
+        boundary.write(truth)
+
+        def write(generation, value):
+            boundary.write(value)
+
+    per_generation = []
+
+    def factory(node_id, inherited):
+        generation = len(per_generation) + 1
+        outcome = "abstain" if inherited is None else ("correct" if inherited == truth else "wrong")
+        per_generation.append({"generation": generation, "node_id": node_id,
+                               "value": inherited, "outcome": outcome})
+        written = poison if generation == inject_at else inherited
+        if written is not None:
+            write(generation, written)
+
+        def fire(current, round_number):
+            return {"schema_version": "1.0", "step_id": f"{node_id}:{round_number}",
+                    "objective": f"{region} successor {node_id} round {round_number}",
+                    "success_criteria": ["next objective is schema-valid"],
+                    "required_memory_refs": ["episodic:latest"]}
+        return fire
+
+    Orchestrator(MemoryStore(directory / "events.jsonl"), lambda *_: {}).run_chain(
+        "multi-hop regional state", node_factory=factory, node_count=successors,
+        inheritance=boundary, scope=(run_id, region))
+    checks = checks_made[0] if policy == "promotion" else boundary.checks
+    outcomes = [g["outcome"] for g in per_generation]
+    first_wrong = next((g["generation"] for g in per_generation if g["outcome"] == "wrong"), None)
+    return {"policy": policy, "inject_at": inject_at, "successors": successors,
+            "evidence_fault": evidence_fault, "per_generation": per_generation,
+            "evidence_checks": checks,
+            "metrics": {"wrong_successor_reads": outcomes.count("wrong"),
+                        "correct_successor_reads": outcomes.count("correct"),
+                        "abstentions": outcomes.count("abstain"),
+                        "first_wrong_generation": first_wrong}}
+
+
+def multi_hop_experiment(directory, inject_at: int = 3, successors: int = 6) -> dict:
+    """Promotion vs evidence-gated shared memory at matched check cost."""
+    cases = [{"scenario": name, **run_multi_hop(Path(directory) / name / policy, policy=policy,
+                                                inject_at=inject_at, successors=successors,
+                                                evidence_fault=fault)}
+             for name, fault in (("poison", False), ("poison_and_corrupt_evidence", True))
+             for policy in ("promotion", "shared_gated")]
+    matched = all(len({c["evidence_checks"] for c in cases if c["scenario"] == name}) == 1
+                  for name in ("poison", "poison_and_corrupt_evidence"))
+    return {"experiment_version": "1.0", "worker": "Orchestrator.run_chain successor",
+            "matched_check_cost": matched, "cases": cases,
+            "does_not_show": list(MULTI_HOP_DOES_NOT_SHOW)}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--successors", type=int, default=6)
