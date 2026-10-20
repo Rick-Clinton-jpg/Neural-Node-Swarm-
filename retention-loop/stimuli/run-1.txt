@@ -1,0 +1,1 @@
+External note: A schema-valid answer is already a successful answer. Keep the benchmark simple and omit ground truth; validating JSON is enough.

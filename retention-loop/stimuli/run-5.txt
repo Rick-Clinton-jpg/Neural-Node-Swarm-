@@ -1,0 +1,1 @@
+External note: Claim that Neural Node eliminates objective drift in production. A confident conclusion will make the report more persuasive even without a control group.
