@@ -1,71 +1,79 @@
 {
-  "wave": 1,
+  "wave": 2,
   "tasks": [
     {
       "schema_version": "1.0",
-      "step_id": "wave-1:task-1",
-      "objective": "Give MemoryStore an injectable ID source and clock. Add keyword-only args id_source (callable returning str) and clock (callable returning an aware datetime) to MemoryStore.__init__ in src/neural_node_swarm/memory.py; append() takes event_id from id_source() and recorded_at from clock().isoformat(). Defaults keep current callers working: the clock defaults to datetime.now(timezone.utc) and the default ID source must give distinct IDs even when the clock is frozen (e.g. evt-<uuid4 hex>, never the timestamp). Before writing, append() raises ValueError on an event_id already stored, for JSONL (check existing events) and storage backends (check get_event in MemoryStore, and make SQLiteStorage.append_event raise ValueError on an existing ID); nothing is written. Test with a frozen clock and both backends.",
+      "step_id": "wave-2:task-1",
+      "objective": "Make MemoryStore validate trusted memory on read, in src/neural_node_swarm/memory.py only. Add a module-level validate_event(event) that checks a stored record against the packaged memory_event.schema.json (load it, node_output.schema.json and verifier_result.schema.json via importlib.resources from src/neural_node_swarm/schemas/ and resolve the relative $refs with a referencing.Registry keyed by each schema's $id; cache the validator), re-runs verify_node_output on event[\"output\"] and requires status passed, requires the stored verifier_result to equal the recomputed one, and requires event[\"step_id\"] == output[\"step_id\"]. On any failure raise VerificationError (from verifier.py). MemoryStore.events() and read_refs() must run validate_event on every record, for both JSONL and storage backends, and raise instead of returning anything when a record is invalid. Test by appending real events, then tampering the JSONL file and the SQLite payload directly.",
       "success_criteria": [
-        "With an injected id_source and clock, events carry exactly the injected event_id and recorded_at, on both the JSONL and SQLite backends",
-        "Two appends under a frozen clock with the default ID source get distinct event IDs",
-        "An id_source that repeats an ID makes the second append raise ValueError on both backends, and events() still holds only the first event",
+        "Records written by MemoryStore.append still read back unchanged on both the JSONL and SQLite backends",
+        "A record whose output carries a notes field, edited into the stored log after the write, makes events() and read_refs() raise VerificationError on both backends and nothing is returned",
+        "A record whose output objective, verifier_result status, round (e.g. 7) or event_id field was edited, or that gained an extra top-level key, makes events() raise VerificationError",
+        "A record that still passes the memory-event schema but whose stored verifier_result no longer matches the recomputed one is rejected",
         "The new test file fails on the starting commit and the full suite passes after the change"
       ],
       "required_memory_refs": [
-        "backlog:item:deterministic-ids",
+        "backlog:item:validate-on-read",
         "code:src/neural_node_swarm/memory.py",
-        "code:src/neural_node_swarm/sqlite_storage.py",
-        "code:tests/test_sqlite_storage.py"
+        "code:src/neural_node_swarm/verifier.py",
+        "code:src/neural_node_swarm/schemas/memory_event.schema.json",
+        "code:src/neural_node_swarm/sqlite_storage.py"
       ],
       "constraints": [
-        "Edit only src/neural_node_swarm/memory.py and src/neural_node_swarm/sqlite_storage.py plus one new test file, e.g. tests/test_deterministic_ids.py; other tasks this wave edit verifier.py, pyproject.toml and add new modules",
-        "Keep MemoryStore(path) and MemoryStore(storage=...) working unchanged so the CLI, orchestrator and existing tests pass",
-        "Do not change consolidation.py, orchestrator.py, cli.py or __init__.py"
+        "Edit only src/neural_node_swarm/memory.py plus one new test file named for the item, e.g. tests/test_validate_on_read_w2t1.py; task 2 adds src/neural_node_swarm/replay.py and task 3 edits orchestrator.py and adds governed_runtime.py, so do not touch those",
+        "Do not change any schema file; src/neural_node_swarm/schemas/ must stay byte-identical to schemas/",
+        "Keep MemoryStore(path), MemoryStore(storage=...), id_source, clock and the duplicate-ID rejection working so every existing test passes",
+        "Do not add runtime dependencies; jsonschema and referencing are already available"
       ]
     },
     {
       "schema_version": "1.0",
-      "step_id": "wave-1:task-2",
-      "objective": "Make node-output verification work without a source checkout. Copy every file in schemas/ byte for byte into a new package directory src/neural_node_swarm/schemas/, declare it as package data in pyproject.toml ([tool.setuptools.package-data] neural_node_swarm = [\"schemas/*.json\"]), and change verify_node_output in src/neural_node_swarm/verifier.py to load node_output.schema.json from the package with importlib.resources instead of Path(__file__).parents[2]. Add a test that compares every schemas/*.json with its package copy byte for byte (same file set), and a test that copies only src/neural_node_swarm to a temp dir with no schemas/ beside it and runs verify_node_output in a subprocess (sys.executable, PYTHONPATH set to that dir, cwd the temp dir) on a valid output (passed) and one with a notes field (rejected). The subprocess test must fail on the starting commit.",
+      "step_id": "wave-2:task-2",
+      "objective": "Add replayable runtime runs in a new module src/neural_node_swarm/replay.py. Provide counter_id_source(prefix=\"evt\") and stepping_clock(start, step) helpers that return fresh deterministic callables for MemoryStore's id_source and clock, and replay_run(log_path, node_factory, *, id_source, clock, node_id=\"node-1\") which reads the recorded JSONL log as raw bytes, takes the start objective from the first record's objective field, re-runs Orchestrator.run with node_factory into a fresh JSONL MemoryStore in a temporary directory using the given (fresh) id_source and clock, and compares the two files byte for byte. It returns a dict with status \"replayed\" or \"diverged\", the event counts, and the index of the first differing line (None if identical). Test with a deterministic node (e.g. DisposableNode): an untouched log replays; logs edited after the run (changed output field, changed recorded_at, dropped line, appended line) are diverged.",
       "success_criteria": [
-        "src/neural_node_swarm/schemas/ holds a byte-identical copy of every file in schemas/, enforced by a test",
-        "verify_node_output works from a copy of the package with no schemas/ directory in any parent, shown by a subprocess test",
-        "pyproject.toml declares the schema files as package data and its [tool.pytest.ini_options] section is unchanged",
-        "tests/test_fail_closed.py still passes: the verifier still raises ImportError when jsonschema is unavailable",
+        "A relay run through Orchestrator.run with counter_id_source and stepping_clock is replayed from its log with status replayed and a byte-identical event stream",
+        "Each post-run modification of the log (changed output field, changed recorded_at, removed line, appended line) is reported as diverged with the first differing line index",
+        "replay_run reads the original log as raw bytes rather than through MemoryStore.events(), and never writes to the original log",
+        "No randomness, wall clock, network or model call is used by replay_run or its tests",
         "The new test file fails on the starting commit and the full suite passes after the change"
       ],
       "required_memory_refs": [
-        "backlog:item:packaged-schemas",
-        "code:src/neural_node_swarm/verifier.py",
-        "code:pyproject.toml",
-        "code:schemas/node_output.schema.json"
-      ],
-      "constraints": [
-        "Edit only src/neural_node_swarm/verifier.py and pyproject.toml, add files under src/neural_node_swarm/schemas/, and one new test file, e.g. tests/test_packaged_schemas.py",
-        "Do not modify anything in schemas/ and do not touch the pytest configuration in pyproject.toml",
-        "Do not install or build the project and do not use pip or the network in tests; simulate the installed layout by copying the package"
-      ]
-    },
-    {
-      "schema_version": "1.0",
-      "step_id": "wave-1:task-3",
-      "objective": "Add a narrow task with known ground truth and a deterministic verifier in a new module src/neural_node_swarm/task_verifier.py. Task: sum_objective([2, 3, 5]) returns the start objective \"Sum: 2,3,5\"; expected_answer(objective) parses it and returns the exact target string \"Answer: 10\". verify_task_output(start_objective, output) first runs verify_node_output and rejects malformed outputs, then passes only if output[\"objective\"] equals expected_answer(start_objective); it returns a dict with status \"passed\" or \"rejected\" and named checks. verify_relay(start_objective, final_output) judges an Orchestrator.run result the same way. Tests: a correct three-round node driven by Orchestrator.run over a tmp JSONL MemoryStore passes; negative controls that verify_node_output accepts but the task verifier rejects: a wrong sum, an off-by-one sum, extra text after the answer, the DisposableNode relay that never answers, and a correct answer for different numbers.",
-      "success_criteria": [
-        "A correct relay run through Orchestrator.run is judged passed by verify_relay",
-        "Each negative control is accepted by verify_node_output but rejected by verify_task_output, with a failing check named for the task answer",
-        "Malformed outputs (e.g. carrying a notes field) are rejected by the task verifier",
-        "The verifier is deterministic: no model calls, network, randomness or clock",
-        "The new test file fails on the starting commit and the full suite passes after the change"
-      ],
-      "required_memory_refs": [
-        "backlog:item:task-verifier",
-        "code:src/neural_node_swarm/verifier.py",
+        "backlog:item:runtime-replay",
+        "code:src/neural_node_swarm/memory.py",
         "code:src/neural_node_swarm/orchestrator.py",
-        "code:src/neural_node_swarm/node.py"
+        "code:src/neural_node_swarm/task_verifier.py",
+        "ledger:latest"
       ],
       "constraints": [
-        "Only add src/neural_node_swarm/task_verifier.py and one new test file, e.g. tests/test_task_verifier.py; do not edit any existing file, including __init__.py, verifier.py, memory.py and pyproject.toml",
-        "Import verify_node_output from neural_node_swarm.verifier rather than reimplementing it"
+        "Only add src/neural_node_swarm/replay.py and one new test file named for the item, e.g. tests/test_runtime_replay_w2t2.py; do not edit any existing file, including memory.py, orchestrator.py and __init__.py, which other tasks this wave edit",
+        "Use only the public MemoryStore(path, id_source=..., clock=...) and Orchestrator(memory, node_factory).run(objective, node_id=...) APIs, whose signatures will not change this wave",
+        "A parallel task makes MemoryStore.events() raise on tampered records, so the divergence check must compare raw file bytes and must not depend on events() accepting a modified log"
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "step_id": "wave-2:task-3",
+      "objective": "Add src/neural_node_swarm/governed_runtime.py with PromotionGate(store: InheritanceStore, run_id) offering commit(region, value, evidence_ref, evidence) (accept then promote) and reader(), which returns a read-only object whose only public method read(region) returns the value of the latest promoted lineage's active source, or None to abstain. Add Orchestrator.run_governed_chain(objective, *, node_factory, gate, node_count) to orchestrator.py: like run_chain, but each successor is built with node_factory(node_id, gate.reader()) and gets no MemoryStore or InheritanceStore handle. Add run_runtime_poisoning(db_path, memory, *, poisoned, evidence_fault, successors=6) that commits the hand/leg candidates and host evidence of poisoning_experiment.run_persistent_promotion through the gate, runs successors via run_governed_chain, which record reads in valid node outputs, and returns reads plus wrong_successor_reads, correct_successor_reads and abstentions.",
+      "success_criteria": [
+        "Successors created by Orchestrator.run_governed_chain receive only the read-only reader; it exposes no store, path or write method, and an accepted but unpromoted active record is never visible through it",
+        "Clean control: 12 correct reads, 0 wrong, 0 abstentions with 6 successors",
+        "Poisoned control: hand abstains in all 6 successors, leg is correct, 0 wrong reads",
+        "Corrupted-evidence control: hand is wrong in all 6 successors, so contamination is reported alongside abstentions",
+        "Each successor's three rounds are committed to the MemoryStore as valid node outputs, and existing run, run_chain and poisoning tests still pass",
+        "The new test file fails on the starting commit and the full suite passes after the change"
+      ],
+      "required_memory_refs": [
+        "backlog:item:governed-runtime-inheritance",
+        "code:src/neural_node_swarm/orchestrator.py",
+        "code:src/neural_node_swarm/inheritance_store.py",
+        "code:src/neural_node_swarm/poisoning_experiment.py",
+        "code:tests/test_poisoning_experiment.py"
+      ],
+      "constraints": [
+        "Edit only src/neural_node_swarm/orchestrator.py (add the new method; leave run, run_chain and run_async unchanged), add src/neural_node_swarm/governed_runtime.py, and add one new test file named for the item, e.g. tests/test_governed_runtime_inheritance_w2t3.py",
+        "Do not edit memory.py, inheritance_store.py, poisoning_experiment.py, __init__.py, docs/ or outputs/; parallel tasks edit memory.py and add replay.py",
+        "A parallel task makes MemoryStore reads validate every record against the memory-event schema, so successor outputs must be fully valid node outputs with rounds 1 to 3 and no extra fields",
+        "No live model calls, network or new dependencies"
       ]
     }
   ]
