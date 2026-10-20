@@ -1,30 +1,24 @@
 {
   "schema_version": "1.0",
-  "step_id": "wave-2:handoff",
-  "objective": "Closed in wave 2: runtime-replay, governed-runtime-inheritance. Open: validate-on-read and multi-hop-matched-cost (now unblocked). validate-on-read stays open: memory.validate_event checks schema, re-runs the verifier and matches verifier_result, but nothing binds a record's content, so a well-formed edit (e.g. output.objective changed to another non-empty string, or node_id/objective/recorded_at changed) still reads back as trusted. It needs content integrity checked on read (e.g. a digest or hash chain kept outside the event, since memory_event.schema.json is frozen with additionalProperties false) for JSONL and SQLite, without breaking replay byte-identity. multi-hop-matched-cost should build on governed_runtime.run_runtime_poisoning and Orchestrator.run_governed_chain: inject contamination several generations deep and compare with evidence-gated shared memory at equal check cost.",
+  "step_id": "wave-3:handoff",
+  "objective": "Closed in wave 3: validate-on-read, multi-hop-matched-cost. No backlog items remain; the backlog is complete and the gate should write swarm/STOP. Nothing is left for a recruiter to post. Watch for, if work resumes: the validate-on-read hash chain (memory.chain_link/verify_chain, JSONL .chain sidecar and SQLite event_chain table) is unkeyed, so an attacker who can write both the log and the chain can recompute it, and dropping the last record together with its last link is not detected; a keyed or externally anchored chain head would close that. multi_hop_matched_cost is a deterministic mechanism experiment: abstentions are reported but are 0 in every case, corrupted evidence defeats both gated policies, and matched cost means one evidence check per write for promotion and gated_shared, not a general equivalence claim.",
   "success_criteria": [
-    "The blackboard posts only open items whose depends_on items are all closed",
-    "At least one task is accepted by the integrator",
-    "Each closed item fully meets its acceptance text, not only the task's success criteria",
-    "A well-formed but content-edited stored record is rejected on read before validate-on-read is closed"
+    "Every backlog item is closed and each closed item met its full acceptance text",
+    "The suite the gate measures passes (148 tests at the end of wave 3)",
+    "No frozen path changed across the loop"
   ],
   "required_memory_refs": [
     "ledger:latest",
-    "backlog:item:validate-on-read",
-    "backlog:item:multi-hop-matched-cost",
+    "backlog:done",
     "code:src/neural_node_swarm/memory.py",
     "code:src/neural_node_swarm/sqlite_storage.py",
-    "code:src/neural_node_swarm/replay.py",
-    "code:src/neural_node_swarm/governed_runtime.py",
-    "code:src/neural_node_swarm/orchestrator.py",
-    "code:src/neural_node_swarm/inheritance_store.py",
-    "code:src/neural_node_swarm/poisoning_experiment.py"
+    "code:src/neural_node_swarm/multi_hop_matched_cost.py",
+    "code:tests/test_validate_on_read_integrity_chain_w3t1.py",
+    "code:tests/test_multi_hop_matched_cost_w3t2.py"
   ],
   "constraints": [
+    "Do not reopen closed items",
     "No live model calls and no network access in code or tests",
-    "Do not edit any existing schema file; keep src/neural_node_swarm/schemas/ byte-identical to schemas/",
-    "MemoryStore.events() now raises VerificationError on any invalid record, so every stored output must be a fully valid node output",
-    "Keep replay_run byte-identical for untouched logs; an integrity mechanism must stay deterministic under injected id_source and clock",
-    "validate-on-read and multi-hop-matched-cost may run in parallel only if one stays out of memory.py"
+    "Keep src/neural_node_swarm/schemas/ byte-identical to schemas/ and do not edit any existing schema file"
   ]
 }
