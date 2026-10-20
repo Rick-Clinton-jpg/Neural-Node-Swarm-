@@ -27,14 +27,25 @@ class Orchestrator:
             current = output
         return current
 
-    def run_chain(self, objective: str, *, node_factory: Callable[[str], Callable[[dict[str, Any], int], dict[str, Any]]], node_count: int = 2) -> dict[str, Any]:
-        """Run non-overlapping nodes. A new node is created only after its predecessor's TTL."""
+    def run_chain(self, objective: str, *, node_factory: Callable[[str], Callable[[dict[str, Any], int], dict[str, Any]]], node_count: int = 2, inheritance: Any = None, scope: tuple[str, str] | None = None) -> dict[str, Any]:
+        """Run non-overlapping nodes. A new node is created only after its predecessor's TTL.
+
+        With ``inheritance`` (an InheritanceStore) and ``scope`` (run_id, region),
+        each node is created as ``node_factory(node_id, inherited)`` where
+        ``inherited`` comes only from the evidence-gated promotion boundary and is
+        None when the node must abstain.
+        """
+        if (inheritance is None) != (scope is None):
+            raise ValueError("inheritance and scope must be given together")
         if node_count < 1:
             raise ValueError("node_count must be positive")
         current = {"schema_version": "1.0", "step_id": "step-0", "objective": objective, "success_criteria": ["next objective is schema-valid"], "required_memory_refs": []}
         for index in range(1, node_count + 1):
             node_id = f"node-{index}"
-            node = node_factory(node_id)
+            if inheritance is None:
+                node = node_factory(node_id)
+            else:
+                node = node_factory(node_id, inheritance.inherited(*scope))
             for round_number in range(1, 4):
                 output = node(current, round_number)
                 self.memory.append(node_id=node_id, round=round_number, objective=current["objective"], output=output)

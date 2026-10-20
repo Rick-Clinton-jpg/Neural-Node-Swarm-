@@ -1,0 +1,23 @@
+name: loop-gate
+
+on:
+  push:
+    branches: [neural-node-loop]
+  pull_request:
+
+jobs:
+  audit:
+    if: github.ref == 'refs/heads/neural-node-loop' || github.head_ref == 'neural-node-loop'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - run: git fetch --no-tags origin '+refs/heads/neural-node-loop-attempt-*:refs/remotes/origin/neural-node-loop-attempt-*'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'pytest>=8' 'jsonschema>=4.20'
+      - run: python loop/gate.py audit

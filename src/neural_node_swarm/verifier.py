@@ -17,9 +17,24 @@ class Check:
     detail: str = ""
 
 
+_PACKAGED_SCHEMAS = Path(__file__).resolve().parent / "schemas"
+_SOURCE_SCHEMAS = Path(__file__).resolve().parents[2] / "schemas"
+
+
+def _load_schema(name: str) -> dict[str, Any]:
+    """Load a schema from the packaged copies, or from a source checkout's schemas/.
+
+    This module stays importable as a standalone file (the loop gate loads it that
+    way), so it resolves paths itself instead of importing the schemas subpackage.
+    """
+    filename = f"{name}.schema.json"
+    packaged = _PACKAGED_SCHEMAS / filename
+    path = packaged if packaged.is_file() else _SOURCE_SCHEMAS / filename
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def verify_node_output(output: Any) -> dict[str, Any]:
-    schema_path = Path(__file__).resolve().parents[2] / "schemas" / "node_output.schema.json"
-    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    schema = _load_schema("node_output")
     import jsonschema
     validator = jsonschema.Draft202012Validator(schema)
     schema_errors = sorted(validator.iter_errors(output), key=lambda error: list(error.path))

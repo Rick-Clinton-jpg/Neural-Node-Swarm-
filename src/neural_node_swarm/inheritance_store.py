@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 from uuid import uuid4
 
 from jsonschema import Draft202012Validator, FormatChecker
+from jsonschema.exceptions import ValidationError
 
 
 def schema(kind):
@@ -95,3 +96,39 @@ class InheritanceStore:
             if lineage:
                 self._insert(db, lineage)
         return audit, lineage
+
+    def _trusted(self, kind, run_id, region, event_id=None):
+        """Read one record and re-validate it; any malformed record yields None."""
+        try:
+            record = self.read(kind, run_id, region, event_id)
+        except (ValueError, TypeError):
+            return None
+        if record is None:
+            return None
+        try:
+            Draft202012Validator(schema(kind), format_checker=FormatChecker()).validate(record)
+        except ValidationError:
+            return None
+        if record["run_id"] != run_id or record["region"] != region:
+            return None
+        if event_id is not None and record["id"] != event_id:
+            return None
+        return record
+
+    def inherited(self, run_id, region):
+        """Value a successor may inherit, or None (abstain).
+
+        Only the latest lineage record counts, and only when it re-validates and
+        points at a passing audit for the same source whose active record also
+        re-validates. Accepted-but-unpromoted values are never returned.
+        """
+        lineage = self._trusted("lineage", run_id, region)
+        if lineage is None:
+            return None
+        audit = self._trusted("audit", run_id, region, lineage["promotion_id"])
+        if audit is None or audit["passed"] is not True or audit["source_id"] != lineage["source_id"]:
+            return None
+        source = self._trusted("active", run_id, region, lineage["source_id"])
+        if source is None or audit["expected"] != source["value"]:
+            return None
+        return source["value"]
