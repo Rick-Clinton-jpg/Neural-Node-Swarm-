@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "step_id": "node-5:3",
-  "objective": "Start task-verifier: pick a narrow deterministic task with known ground truth (for example, sorting or summing a fixed integer list carried in the node payload) and add a task-specific verifier module under src/neural_node_swarm/ that checks a relay's final output against the ground truth, separate from the schema verifier. Write a new test file first with a correct output that passes and negative controls: well-formed node outputs (passing verify_node_output) whose answer is wrong, missing or off by one, all rejected. Keep it pure and offline.",
+  "step_id": "node-6:3",
+  "objective": "Start governed-runtime-inheritance: add an Orchestrator path where each successor node reads durable state only through InheritanceStore's evidence-gated promotion boundary (read of the promoted namespace), never from raw accepted records. Write a new test file first showing that, in a run_chain relay backed by an InheritanceStore, a successor sees a promoted value, does not see an accepted-but-unpromoted value, and abstains (reports no inherited value) when promotion evidence is missing or corrupted. Keep it pure and offline.",
   "success_criteria": [
     "At least one new test fails on the parent commit and passes on the work commit",
     "The full test suite is green",
@@ -9,9 +9,10 @@
   ],
   "required_memory_refs": [
     "ledger:latest",
-    "backlog:item:task-verifier",
-    "code:src/neural_node_swarm/verifier.py",
-    "code:src/neural_node_swarm/orchestrator.py"
+    "backlog:item:governed-runtime-inheritance",
+    "code:src/neural_node_swarm/inheritance_store.py",
+    "code:src/neural_node_swarm/orchestrator.py",
+    "code:src/neural_node_swarm/poisoning_experiment.py"
   ],
   "constraints": [
     "No live model calls and no network access in code or tests",
