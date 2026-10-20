@@ -1,22 +1,29 @@
 {
   "schema_version": "1.0",
-  "step_id": "wave-0:handoff",
-  "objective": "Start the swarm on the backlog. Every item is open. Post up to three tasks that parallel workers can finish independently from the same starting commit, respecting depends_on, and keep tasks on different files where possible so the integrator can accept all of them.",
+  "step_id": "wave-1:handoff",
+  "objective": "Closed in wave 1: deterministic-ids, packaged-schemas, task-verifier. Open: runtime-replay (now unblocked), validate-on-read, governed-runtime-inheritance, and multi-hop-matched-cost (still blocked until governed-runtime-inheritance closes). Watch for: MemoryStore now takes id_source and clock and rejects duplicate IDs, but consolidation.py stamps updated_at with datetime.now and InheritanceStore uses uuid4 and the wall clock, so replay and inheritance work must inject those or exclude them explicitly. validate-on-read and runtime-replay both touch memory.py, so do not give them to parallel workers unless their edits are clearly separated. The verifier now loads node_output.schema.json from src/neural_node_swarm/schemas/; any schema change must keep those copies byte-identical to schemas/ (a test enforces it). The sum task in task_verifier.py is available as ground truth for replay tests.",
   "success_criteria": [
-    "The blackboard is valid",
-    "At least one task is accepted by the integrator"
+    "The blackboard posts only open items whose depends_on items are all closed",
+    "At least one task is accepted by the integrator",
+    "Each closed item fully meets its acceptance text, not only the task's success criteria"
   ],
   "required_memory_refs": [
     "ledger:latest",
-    "backlog:item:deterministic-ids",
     "backlog:item:runtime-replay",
     "backlog:item:validate-on-read",
-    "backlog:item:packaged-schemas",
-    "backlog:item:task-verifier",
     "backlog:item:governed-runtime-inheritance",
-    "backlog:item:multi-hop-matched-cost"
+    "backlog:item:multi-hop-matched-cost",
+    "code:src/neural_node_swarm/memory.py",
+    "code:src/neural_node_swarm/sqlite_storage.py",
+    "code:src/neural_node_swarm/consolidation.py",
+    "code:src/neural_node_swarm/inheritance_store.py",
+    "code:src/neural_node_swarm/orchestrator.py",
+    "code:src/neural_node_swarm/task_verifier.py",
+    "code:src/neural_node_swarm/verifier.py"
   ],
   "constraints": [
-    "No live model calls and no network access in code or tests"
+    "No live model calls and no network access in code or tests",
+    "Do not take multi-hop-matched-cost until governed-runtime-inheritance is closed",
+    "Keep src/neural_node_swarm/schemas/ byte-identical to schemas/"
   ]
 }
