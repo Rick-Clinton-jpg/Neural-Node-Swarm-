@@ -41,6 +41,20 @@ class Orchestrator:
                 current = output
         return current
 
+    def run_governed_chain(self, objective: str, *, node_factory: Callable[[str, Any], Callable[[dict[str, Any], int], dict[str, Any]]], gate: Any, node_count: int = 2) -> dict[str, Any]:
+        """Like run_chain, but each successor gets only gate.reader(): no memory or store handle."""
+        if node_count < 1:
+            raise ValueError("node_count must be positive")
+        current = {"schema_version": "1.0", "step_id": "step-0", "objective": objective, "success_criteria": ["next objective is schema-valid"], "required_memory_refs": []}
+        for index in range(1, node_count + 1):
+            node_id = f"node-{index}"
+            node = node_factory(node_id, gate.reader())
+            for round_number in range(1, 4):
+                output = node(current, round_number)
+                self.memory.append(node_id=node_id, round=round_number, objective=current["objective"], output=output)
+                current = output
+        return current
+
     async def run_async(self, objective: str, *, node_id: str = "node-1", timeout: float = 30.0, retries: int = 0) -> dict[str, Any]:
         """Async-ready relay with bounded node calls and single-threaded commits."""
         if timeout <= 0 or retries < 0:
