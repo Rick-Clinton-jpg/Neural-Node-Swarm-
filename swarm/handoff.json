@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "step_id": "wave-0:handoff",
+  "objective": "Start the swarm on the backlog. Every item is open. Post up to three tasks that parallel workers can finish independently from the same starting commit, respecting depends_on, and keep tasks on different files where possible so the integrator can accept all of them.",
+  "success_criteria": [
+    "The blackboard is valid",
+    "At least one task is accepted by the integrator"
+  ],
+  "required_memory_refs": [
+    "ledger:latest",
+    "backlog:item:deterministic-ids",
+    "backlog:item:runtime-replay",
+    "backlog:item:validate-on-read",
+    "backlog:item:packaged-schemas",
+    "backlog:item:task-verifier",
+    "backlog:item:governed-runtime-inheritance",
+    "backlog:item:multi-hop-matched-cost"
+  ],
+  "constraints": [
+    "No live model calls and no network access in code or tests"
+  ]
+}

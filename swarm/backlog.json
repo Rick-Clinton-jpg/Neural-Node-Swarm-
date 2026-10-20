@@ -1,0 +1,54 @@
+{
+  "backlog_version": "1.0",
+  "max_waves": 5,
+  "max_tasks_per_wave": 3,
+  "source": "Items and acceptance text copied unchanged from loop/backlog.json on branch neural-node-loop (PR #1); depends_on added for the swarm.",
+  "items": [
+    {
+      "id": "deterministic-ids",
+      "title": "Deterministic event IDs and an injectable clock",
+      "acceptance": "Event IDs and recorded timestamps come from an injectable ID source and clock. Two appends in the same clock tick get distinct IDs, and a duplicate event ID is rejected by both the JSONL and SQLite backends instead of being stored.",
+      "depends_on": []
+    },
+    {
+      "id": "runtime-replay",
+      "title": "Replayable runtime runs",
+      "acceptance": "A relay run with injected IDs and clock can be replayed from its episodic log and reproduces a byte-identical event stream. A log that was modified after the run is detected as not replaying.",
+      "depends_on": [
+        "deterministic-ids"
+      ]
+    },
+    {
+      "id": "validate-on-read",
+      "title": "Validate trusted memory on read",
+      "acceptance": "MemoryStore validates every stored record against the memory-event contract and re-runs the node-output verifier when reading. A tampered record, or one carrying a side channel such as notes, fails closed and is never returned as trusted.",
+      "depends_on": []
+    },
+    {
+      "id": "packaged-schemas",
+      "title": "Schemas available to installed builds",
+      "acceptance": "A built, non-editable install can verify node outputs without a source checkout. Any schema copies shipped in the package are byte-identical to schemas/, enforced by a test.",
+      "depends_on": []
+    },
+    {
+      "id": "task-verifier",
+      "title": "A task-specific deterministic verifier",
+      "acceptance": "A narrow task with known ground truth and a deterministic task-specific verifier, so a relay can be judged as having achieved its objective rather than only being well-formed. Includes negative controls where well-formed but wrong outputs are rejected.",
+      "depends_on": []
+    },
+    {
+      "id": "governed-runtime-inheritance",
+      "title": "Evidence-gated inheritance in the real runtime",
+      "acceptance": "Successors in the real Orchestrator read durable state only through the evidence-gated promotion boundary. The regional poisoning scenario runs through that runtime path with clean, poisoned and corrupted-evidence controls, reporting abstentions alongside contamination.",
+      "depends_on": []
+    },
+    {
+      "id": "multi-hop-matched-cost",
+      "title": "Multi-hop contamination and matched-cost comparison",
+      "acceptance": "Contamination injected several successor generations deep is measured, and promotion is compared with evidence-gated shared memory at matched check cost. Results report abstentions and state what the comparison does not show.",
+      "depends_on": [
+        "governed-runtime-inheritance"
+      ]
+    }
+  ]
+}
