@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "step_id": "node-5:3",
+  "objective": "Build a reproducible objective-retention benchmark for a five-node relay, with distracting inputs, grounded checks, a negative control, and an honest results report. Next: preregister a blinded evaluation on independently labeled realistic relay traces and supplied evidence, include an unprotected control arm, and report detection and false-positive rates.",
+  "success_criteria": [
+    "Use labels set independently of the check outputs and publish the sampling and scoring protocol before evaluating traces",
+    "Measure detection and false-positive rates for the grounded and prefix checks alongside their structural controls and an unprotected arm",
+    "Report uncertainty and limitations without treating supplied evidence or synthetic fixtures as real-world truth"
+  ],
+  "required_memory_refs": ["ledger:latest"],
+  "constraints": [
+    "The observed fixture counts and limits are in docs/lab/retention_results.md; src/neural_node_swarm/lab/retention_summary.py counts only those fixture verdicts",
+    "The check in src/neural_node_swarm/lab/relay_trace.py compares only the exact fixed prefix and can miss semantic drift in the Next step",
+    "The paired cases in src/neural_node_swarm/lab/benchmark_cases.py compare claims with supplied evidence, not verified truth",
+    "Current relay cases are synthetic; no live model behavior, production guarantee, or causal reduction in drift has been measured",
+    "The five-node gate stops after this run; the proposed evaluation is a future experiment, not a sixth relay run"
+  ]
+}
