@@ -1,21 +1,21 @@
 {
   "schema_version": "1.0",
-  "step_id": "node-8:3",
-  "objective": "Give the anchor freshness: anchor_stale_rollback is the last log miss, because a store accepts any older anchor it is handed. Add src/neural_node_swarm/lab/witnessed_log.py on BoundedMemoryStore: an AnchorWitness kept in its own file outside events.jsonl records the highest anchor ever issued, refuses to record a lower count or a different head at an equal or lower count, and a WitnessedMemoryStore refuses (anchor_stale) any caller anchor behind the witness and advances the witness on each append. Add case witness_rollback (truncate the log and roll the witness file back with it: pin as a recorded miss, since trust moved rather than vanished) and an eight-target catalog under outputs/lab/ keeping the seven earlier columns unchanged. Pin that anchor_stale_rollback is missed by bounded and caught by witnessed, nothing regresses, and an honest relay passing its anchor forward commits and reads back.",
+  "step_id": "node-9:3",
+  "objective": "Make freshness survive one rewritten witness: witness_rollback is now the log miss, because a single witness file rolls back with the log. Add src/neural_node_swarm/lab/quorum_log.py on WitnessedMemoryStore: a QuorumWitness over N AnchorWitness files in separate directories, advanced on every append, whose current anchor is the highest any replica holds after checking the replicas agree on their common prefix (refuse witness_fork otherwise). A QuorumMemoryStore refuses (anchor_stale) any caller anchor behind that highest anchor. Add case quorum_partial_rollback (truncate the log and roll back all but one replica: caught) and quorum_full_rollback (roll back every replica: pin as a recorded miss), and a nine-target catalog under outputs/lab/ keeping the eight earlier columns unchanged. Pin that witness_rollback is missed by witnessed and caught by quorum, nothing regresses, and an honest relay commits and reads back.",
   "success_criteria": [
     "At least one new test fails on the parent commit and passes on the work commit",
-    "anchor_stale_rollback is missed by bounded and caught by witnessed, with no regression",
-    "An honest relay commits and reads back; witness_rollback is a recorded miss"
+    "witness_rollback is missed by witnessed and caught by quorum, with no regression",
+    "An honest relay commits and reads back; quorum_full_rollback is a recorded miss"
   ],
   "required_memory_refs": [
     "ledger:latest",
-    "code:src/neural_node_swarm/lab/bounded_log.py",
-    "code:src/neural_node_swarm/lab/seven_target_catalog.py",
-    "code:outputs/lab/adversarial_catalog_seven_targets.json"
+    "code:src/neural_node_swarm/lab/witnessed_log.py",
+    "code:src/neural_node_swarm/lab/eight_target_catalog.py",
+    "code:outputs/lab/adversarial_catalog_eight_targets.json"
   ],
   "constraints": [
     "No live model calls and no network access",
     "Add files only, inside the lab namespace",
-    "Do not change the stock, hardened, budget, ref_binding, sealed, anchored or bounded classifications already pinned"
+    "Do not change the stock, hardened, budget, ref_binding, sealed, anchored, bounded or witnessed classifications already pinned"
   ]
 }
