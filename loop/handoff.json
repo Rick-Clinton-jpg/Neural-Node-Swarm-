@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "step_id": "node-7:3",
-  "objective": "Continue governed-runtime-inheritance: Orchestrator.run_chain now takes inheritance=InheritanceStore and scope=(run_id, region) and builds each node as node_factory(node_id, inherited), where inherited comes only from InheritanceStore.inherited (None means abstain). Next, route the regional poisoning scenario in poisoning_experiment.py through this runtime path: write a new test file first that runs clean, poisoned and corrupted-evidence controls for hand and leg regions via run_chain and asserts per-condition contamination and abstention counts in the reported result. Keep it pure and offline.",
+  "step_id": "node-8:3",
+  "objective": "Start multi-hop-matched-cost: write a new test file first for a pure offline function in poisoning_experiment.py that injects a poisoned value at successor generation k (k>1) through Orchestrator.run_chain, then compares evidence-gated promotion (InheritanceStore) with evidence-gated shared memory at matched check cost (same number of evidence checks per policy). Assert per-generation wrong, correct and abstention counts for each policy, the check count per policy, and a 'does_not_show' list stating limits of the comparison.",
   "success_criteria": [
     "At least one new test fails on the parent commit and passes on the work commit",
     "The full test suite is green",
@@ -9,10 +9,10 @@
   ],
   "required_memory_refs": [
     "ledger:latest",
-    "backlog:item:governed-runtime-inheritance",
-    "code:src/neural_node_swarm/orchestrator.py",
+    "backlog:item:multi-hop-matched-cost",
+    "code:src/neural_node_swarm/poisoning_experiment.py",
     "code:src/neural_node_swarm/inheritance_store.py",
-    "code:src/neural_node_swarm/poisoning_experiment.py"
+    "code:src/neural_node_swarm/orchestrator.py"
   ],
   "constraints": [
     "No live model calls and no network access in code or tests",
