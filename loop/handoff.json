@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "step_id": "node-6:3",
-  "objective": "Start governed-runtime-inheritance: add an Orchestrator path where each successor node reads durable state only through InheritanceStore's evidence-gated promotion boundary (read of the promoted namespace), never from raw accepted records. Write a new test file first showing that, in a run_chain relay backed by an InheritanceStore, a successor sees a promoted value, does not see an accepted-but-unpromoted value, and abstains (reports no inherited value) when promotion evidence is missing or corrupted. Keep it pure and offline.",
+  "step_id": "node-7:3",
+  "objective": "Continue governed-runtime-inheritance: Orchestrator.run_chain now takes inheritance=InheritanceStore and scope=(run_id, region) and builds each node as node_factory(node_id, inherited), where inherited comes only from InheritanceStore.inherited (None means abstain). Next, route the regional poisoning scenario in poisoning_experiment.py through this runtime path: write a new test file first that runs clean, poisoned and corrupted-evidence controls for hand and leg regions via run_chain and asserts per-condition contamination and abstention counts in the reported result. Keep it pure and offline.",
   "success_criteria": [
     "At least one new test fails on the parent commit and passes on the work commit",
     "The full test suite is green",
@@ -10,8 +10,8 @@
   "required_memory_refs": [
     "ledger:latest",
     "backlog:item:governed-runtime-inheritance",
-    "code:src/neural_node_swarm/inheritance_store.py",
     "code:src/neural_node_swarm/orchestrator.py",
+    "code:src/neural_node_swarm/inheritance_store.py",
     "code:src/neural_node_swarm/poisoning_experiment.py"
   ],
   "constraints": [
