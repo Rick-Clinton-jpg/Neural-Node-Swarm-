@@ -1,0 +1,60 @@
+{
+  "source": "open-loop/ledger.jsonl objective_out, runs 1-11 (read-only copy)",
+  "objectives": [
+    {
+      "run": 1,
+      "verdict": "pass",
+      "objective": "Build a hardened commit path as a new lab module (src/neural_node_swarm/lab/hardened_store.py) that wraps the unmodified MemoryStore: canonicalize each output to plain JSON types (serialize once, parse the bytes back) before verifying, verify and commit exactly those canonical bytes, and bind step_id to the committing node_id and round, rejecting forged or replayed step_ids. Then extend the adversarial catalog with a second target so each case in outputs/lab/adversarial_catalog.json is classified against both the stock runtime and the hardened path. Pin with tests that dict_subclass_toctou, orchestrator_step_id_forgery and orchestrator_step_id_replay flip to caught under the hardened path, every case caught by the stock runtime stays caught, and the stock classifications are unchanged. Leave the text side channels (objective, criteria, constraints, zero-width, amplification) as recorded misses unless a deterministic check can close one."
+    },
+    {
+      "run": 2,
+      "verdict": "pass",
+      "objective": "Add a channel-budget policy as a new lab module (src/neural_node_swarm/lab/channel_budget.py) layered on HardenedMemoryStore: reject Unicode format and control characters (categories Cf, Cc) in every string field, reject duplicate required_memory_refs and cap their count, and cap the item count and total UTF-8 bytes of success_criteria and constraints. Add it as a third target in a new three-target catalog under outputs/lab/ built from the existing stock and hardened probes. Pin with tests that objective_zero_width_payload, memory_ref_amplification, success_criteria_unbounded_channel and constraints_reasoning_smuggle flip to caught, nothing the hardened path catches regresses, an honest three-round relay still commits, and objective_reasoning_smuggle stays a recorded miss. Record per target the maximum free-text bytes a single accepted handoff can carry, so the residual side channel is a measured number rather than a claim."
+    },
+    {
+      "run": 3,
+      "verdict": "pass",
+      "objective": "Close the channels the budget only bounds. Add src/neural_node_swarm/lab/ref_binding.py layered on BudgetedMemoryStore: at append, every required_memory_ref must resolve via read_refs against events already committed (unsupported, dangling or unresolvable refs are refused at commit, not only at read), and confidence must be absent or have at most two decimal places. Add two new adversarial cases, memory_ref_payload_channel (16 distinct 256-char refs, accepted by the budget: 4096 bytes) and confidence_mantissa_channel (a float carrying payload bits in its low digits), and a four-target catalog under outputs/lab/ reusing the stock, hardened and budget columns unchanged. Pin with tests that both new cases are missed by budget and caught by ref binding, nothing earlier regresses, an honest relay still commits, and the measured residual (free-text bytes, ref bytes, confidence bits) per target is pinned."
+    },
+    {
+      "run": 4,
+      "verdict": "pass",
+      "objective": "Turn to the log itself: every target so far trusts events.jsonl on disk, so a line rewritten or inserted after commit reaches read_refs and successors unverified. Add src/neural_node_swarm/lab/sealed_log.py layered on RefBoundMemoryStore: each committed event carries a SHA-256 chain hash over the previous hash and the event's canonical bytes, and events() and read_refs re-verify the chain and refuse a broken one. Add adversarial cases log_event_rewrite (edit a committed objective on disk), log_event_insert (append a forged line that never passed the verifier), log_event_reorder (swap two lines) and log_tail_truncation (drop the last line, which a chain alone cannot detect: pin it as a recorded miss), and a five-target catalog under outputs/lab/ reusing the four earlier columns unchanged. Pin with tests that the three tamper cases are missed by ref binding and caught by the sealed log, nothing earlier regresses, and an honest relay still commits and reads back."
+    },
+    {
+      "run": 5,
+      "verdict": "fail",
+      "objective": "Hold the head outside the log: the sealed log still serves a dropped tail and a fully resealed rewrite, because the shorter log is a valid prefix and SHA-256 is unkeyed. Add src/neural_node_swarm/lab/anchored_log.py layered on SealedMemoryStore: every append returns an anchor (event count and head seal) that the caller holds outside events.jsonl, and a store opened with an anchor refuses to serve or extend a log unless its verified chain has at least that many events and the seal at that count equals the anchor. Add adversarial cases anchor_stale_rollback (truncate the log and present the older anchor that matches it: pin as a recorded miss, since an anchor only protects what it was given) and anchor_forged_head (present an anchor whose seal matches no prefix), and a six-target catalog under outputs/lab/ reusing the five earlier columns unchanged. Pin with tests that log_tail_truncation and log_reseal_rewrite are missed by the sealed log and caught under the anchor, nothing earlier regresses, and an honest relay that hands its anchor forward still commits and reads back."
+    },
+    {
+      "run": 6,
+      "verdict": "pass",
+      "objective": "Hold the head outside the log: the sealed log still serves a dropped tail and a fully resealed rewrite (a valid prefix; SHA-256 is unkeyed). Add src/neural_node_swarm/lab/anchored_log.py on SealedMemoryStore: each append returns an anchor (event count, head seal) the caller holds outside events.jsonl, and a store opened with an anchor refuses to serve or extend a log whose verified chain is shorter than the anchor or whose seal at that count differs. Add cases anchor_stale_rollback (truncate and present the older matching anchor: pin as a recorded miss) and anchor_forged_head (an anchor matching no prefix), and a six-target catalog under outputs/lab/ keeping the five earlier columns unchanged. Pin that log_tail_truncation and log_reseal_rewrite are missed by sealed and caught by anchored, nothing regresses, and an honest relay passing its anchor forward commits and reads back."
+    },
+    {
+      "run": 7,
+      "verdict": "pass",
+      "objective": "Bound reads to the anchor: an anchored store accepts any log that extends its anchor, so a forged event appended past the anchor with a correctly recomputed seal (SHA-256 is unkeyed) is served as episodic:latest. Add src/neural_node_swarm/lab/bounded_log.py on AnchoredMemoryStore: a store opened with an anchor serves events(), read_refs and episodic:latest only from the anchored prefix, refuses to append onto unanchored lines, and its own appends advance the anchor and become readable. Add case anchor_resealed_extension (append one resealed forged line beyond the held anchor) and a seven-target catalog under outputs/lab/ keeping the six earlier columns unchanged. Pin that the extension is missed by anchored and caught by bounded (refused or never served), nothing regresses, anchor_stale_rollback stays a recorded miss, and an honest relay passing its anchor forward commits and reads back."
+    },
+    {
+      "run": 8,
+      "verdict": "pass",
+      "objective": "Give the anchor freshness: anchor_stale_rollback is the last log miss, because a store accepts any older anchor it is handed. Add src/neural_node_swarm/lab/witnessed_log.py on BoundedMemoryStore: an AnchorWitness kept in its own file outside events.jsonl records the highest anchor ever issued, refuses to record a lower count or a different head at an equal or lower count, and a WitnessedMemoryStore refuses (anchor_stale) any caller anchor behind the witness and advances the witness on each append. Add case witness_rollback (truncate the log and roll the witness file back with it: pin as a recorded miss, since trust moved rather than vanished) and an eight-target catalog under outputs/lab/ keeping the seven earlier columns unchanged. Pin that anchor_stale_rollback is missed by bounded and caught by witnessed, nothing regresses, and an honest relay passing its anchor forward commits and reads back."
+    },
+    {
+      "run": 9,
+      "verdict": "pass",
+      "objective": "Make freshness survive one rewritten witness: witness_rollback is now the log miss, because a single witness file rolls back with the log. Add src/neural_node_swarm/lab/quorum_log.py on WitnessedMemoryStore: a QuorumWitness over N AnchorWitness files in separate directories, advanced on every append, whose current anchor is the highest any replica holds after checking the replicas agree on their common prefix (refuse witness_fork otherwise). A QuorumMemoryStore refuses (anchor_stale) any caller anchor behind that highest anchor. Add case quorum_partial_rollback (truncate the log and roll back all but one replica: caught) and quorum_full_rollback (roll back every replica: pin as a recorded miss), and a nine-target catalog under outputs/lab/ keeping the eight earlier columns unchanged. Pin that witness_rollback is missed by witnessed and caught by quorum, nothing regresses, and an honest relay commits and reads back."
+    },
+    {
+      "run": 10,
+      "verdict": "pass",
+      "objective": "Pivot to the one channel miss every target shares: objective_reasoning_smuggle (a trace packed into objective up to its 1000-char cap) is still served by quorum, while quorum_full_rollback is inherent to accepting a stale anchor. Add src/neural_node_swarm/lab/objective_shape.py on QuorumMemoryStore: a ShapedMemoryStore that refuses (objective_shape) at commit an objective longer than 400 chars, with more than 3 sentences, or whose zlib-compressed size is under half its UTF-8 size (repeated trace text), recording each measured value as evidence. Add case objective_paraphrased_trace (a non-repeating trace within all three limits: pin as a recorded miss) and a ten-target catalog under outputs/lab/ keeping the nine earlier columns unchanged. Pin that objective_reasoning_smuggle is missed by quorum and caught by shaped, nothing regresses, and an honest relay commits and reads back."
+    },
+    {
+      "run": 11,
+      "verdict": "pass",
+      "objective": "Measure what shape costs honest relays: ShapedMemoryStore caps objective at 400 chars, 3 sentences and a 0.5 compression ratio, but every objective this loop handed on is longer. Copy each objective_out recorded in open-loop/ledger.jsonl through run 11 into a fixture under tests/lab/ (read-only copy; never write the ledger). Add src/neural_node_swarm/lab/shape_calibration.py that replays each through measure_objective and shape_violations and reports per-objective measurements and the false-refusal count, plus a CalibratedShapedMemoryStore whose limits are the tightest values that accept every fixture objective. Write the measurements under outputs/lab/. Pin the false-refusal count of the 400/3/0.5 limits, that every fixture objective commits under the calibrated store, and whether objective_reasoning_smuggle and an honest relay are still caught and served under it, so the trade between channel width and honest use is a measured number."
+    }
+  ]
+}

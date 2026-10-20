@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "step_id": "node-12:3",
+  "objective": "Price the channel the compression limit leaves open: on the ten honest handoffs of runs 1-11, 400/3/0.5 refuses all ten (chars and sentences) while compression alone refuses none and still catches objective_reasoning_smuggle. Add src/neural_node_swarm/lab/eleven_target_catalog.py with a compression_shaped target (CalibratedShapedMemoryStore under COMPRESSION_ONLY_LIMITS) keeping the ten earlier columns unchanged, plus case objective_long_unique_trace: a non-repeating trace of 990 chars inside the verifier cap. Pin that compression_shaped flips the same cases from quorum as shaped, that the long unique trace is caught by shaped and missed by compression_shaped, and that every fixture objective in tests/lab commits under compression_shaped, so the width it reopens is a measured number.",
+  "success_criteria": [
+    "At least one new test fails on the parent commit and passes on the work commit",
+    "compression_shaped regresses nothing against quorum and flips the same cases as shaped",
+    "objective_long_unique_trace is pinned as caught by shaped and missed by compression_shaped"
+  ],
+  "required_memory_refs": [
+    "ledger:latest",
+    "code:src/neural_node_swarm/lab/shape_calibration.py",
+    "code:outputs/lab/shape_calibration_runs_1_11.json",
+    "code:src/neural_node_swarm/lab/ten_target_catalog.py"
+  ],
+  "constraints": [
+    "No live model calls and no network access",
+    "Add files only, inside the lab namespace",
+    "Do not change any classification already pinned in the ten-target catalog"
+  ]
+}
