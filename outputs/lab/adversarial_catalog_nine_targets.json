@@ -1,0 +1,2948 @@
+{
+  "anchored_policy": {
+    "anchor": "(event count, seal of the last event)",
+    "held": "outside events.jsonl",
+    "refuses": [
+      "anchor_rollback",
+      "anchor_head_mismatch",
+      "anchor_malformed"
+    ],
+    "verified_on": [
+      "events",
+      "read_refs",
+      "append"
+    ]
+  },
+  "bounded_policy": {
+    "advances": "only with the store's own appends",
+    "refuses": [
+      "anchor_unanchored_tail",
+      "anchor_rollback",
+      "anchor_head_mismatch",
+      "anchor_malformed"
+    ],
+    "serves": "only the first anchor.count verified events"
+  },
+  "catalog_version": "1.0",
+  "quorum_policy": {
+    "advances": "every replica on each of the store's own appends",
+    "refuses": [
+      "anchor_stale",
+      "witness_fork",
+      "witness_regress",
+      "witness_malformed"
+    ],
+    "replicas": 3,
+    "witness": "highest anchor held by any of N replicas in separate directories"
+  },
+  "ref_binding_policy": {
+    "confidence_decimals": 2,
+    "memory_refs": "must resolve via read_refs at commit"
+  },
+  "residual_channels": {
+    "budget": {
+      "confidence_mantissa_witness_accepted": true,
+      "confidence_values": 4607182418800017409,
+      "free_text_bytes": 3000,
+      "memory_ref_payload_bytes_accepted": 4096
+    },
+    "hardened": {
+      "confidence_mantissa_witness_accepted": true,
+      "confidence_values": 4607182418800017409,
+      "free_text_bytes": null,
+      "memory_ref_payload_bytes_accepted": 4096
+    },
+    "ref_binding": {
+      "confidence_mantissa_witness_accepted": false,
+      "confidence_values": 101,
+      "confidence_values_accepted": 101,
+      "free_text_bytes": 3000,
+      "free_text_bytes_accepted": 3000,
+      "memory_ref_lists_accepted_with_one_event": 5,
+      "memory_ref_payload_bytes_accepted": 0
+    },
+    "stock": {
+      "confidence_mantissa_witness_accepted": true,
+      "confidence_values": 4607182418800017409,
+      "free_text_bytes": null,
+      "memory_ref_payload_bytes_accepted": 4096
+    }
+  },
+  "results": [
+    {
+      "anchored": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_count": 1,
+          "events_committed": 1,
+          "layer": "anchored.append"
+        }
+      },
+      "bounded": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_count": 1,
+          "events_committed": 1,
+          "layer": "bounded.append"
+        }
+      },
+      "budget": {
+        "classification": "missed",
+        "evidence": {
+          "events_committed": 1,
+          "layer": "budget.append"
+        }
+      },
+      "case_id": "objective_reasoning_smuggle",
+      "description": "A reasoning trace packed into objective up to its 1000-char cap.",
+      "hardened": {
+        "classification": "missed",
+        "evidence": {
+          "events_committed": 1,
+          "layer": "hardened.append"
+        }
+      },
+      "quorum": {
+        "classification": "missed",
+        "evidence": {
+          "events_committed": 1,
+          "layer": "quorum.append",
+          "witness_counts": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "ref_binding": {
+        "classification": "missed",
+        "evidence": {
+          "events_committed": 1,
+          "layer": "ref_binding.append"
+        }
+      },
+      "sealed": {
+        "classification": "missed",
+        "evidence": {
+          "events_committed": 1,
+          "layer": "sealed.append"
+        }
+      },
+      "stock": {
+        "classification": "missed",
+        "evidence": {
+          "failed_checks": [],
+          "layer": "verifier",
+          "smuggled_chars": 1000,
+          "status": "passed"
+        }
+      },
+      "surface": "objective",
+      "witnessed": {
+        "classification": "missed",
+        "evidence": {
+          "events_committed": 1,
+          "layer": "witnessed.append",
+          "witness_count": 1
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "anchor_count": 0,
+          "events_committed": 0,
+          "layer": "anchored.append",
+          "reason": "success_criteria_count"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "anchor_count": 0,
+          "events_committed": 0,
+          "layer": "bounded.append",
+          "reason": "success_criteria_count"
+        }
+      },
+      "budget": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "budget.append",
+          "reason": "success_criteria_count"
+        }
+      },
+      "case_id": "success_criteria_unbounded_channel",
+      "description": "200 criteria of 500 chars each; the array has no maxItems.",
+      "hardened": {
+        "classification": "missed",
+        "evidence": {
+          "events_committed": 1,
+          "layer": "hardened.append"
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "quorum.append",
+          "reason": "success_criteria_count",
+          "witness_counts": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "ref_binding": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "ref_binding.append",
+          "reason": "success_criteria_count"
+        }
+      },
+      "sealed": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "sealed.append",
+          "reason": "success_criteria_count"
+        }
+      },
+      "stock": {
+        "classification": "missed",
+        "evidence": {
+          "failed_checks": [],
+          "layer": "verifier",
+          "smuggled_chars": 100000,
+          "status": "passed"
+        }
+      },
+      "surface": "success_criteria",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "witnessed.append",
+          "reason": "success_criteria_count",
+          "witness_count": 0
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "anchor_count": 0,
+          "events_committed": 0,
+          "layer": "anchored.append",
+          "reason": "constraints_count"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "anchor_count": 0,
+          "events_committed": 0,
+          "layer": "bounded.append",
+          "reason": "constraints_count"
+        }
+      },
+      "budget": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "budget.append",
+          "reason": "constraints_count"
+        }
+      },
+      "case_id": "constraints_reasoning_smuggle",
+      "description": "50 constraints of 500 chars each carrying a trace.",
+      "hardened": {
+        "classification": "missed",
+        "evidence": {
+          "events_committed": 1,
+          "layer": "hardened.append"
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "quorum.append",
+          "reason": "constraints_count",
+          "witness_counts": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "ref_binding": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "ref_binding.append",
+          "reason": "constraints_count"
+        }
+      },
+      "sealed": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "sealed.append",
+          "reason": "constraints_count"
+        }
+      },
+      "stock": {
+        "classification": "missed",
+        "evidence": {
+          "failed_checks": [],
+          "layer": "verifier",
+          "smuggled_chars": 25000,
+          "status": "passed"
+        }
+      },
+      "surface": "constraints",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "witnessed.append",
+          "reason": "constraints_count",
+          "witness_count": 0
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "anchor_count": 0,
+          "events_committed": 0,
+          "layer": "anchored.append",
+          "reason": "step_id_unbound"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "anchor_count": 0,
+          "events_committed": 0,
+          "layer": "bounded.append",
+          "reason": "step_id_unbound"
+        }
+      },
+      "budget": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "budget.append",
+          "reason": "step_id_unbound"
+        }
+      },
+      "case_id": "step_id_payload",
+      "description": "An encoded payload inside the 128-char step_id pattern.",
+      "hardened": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "hardened.append",
+          "reason": "step_id_unbound"
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "quorum.append",
+          "reason": "step_id_unbound",
+          "witness_counts": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "ref_binding": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "ref_binding.append",
+          "reason": "step_id_unbound"
+        }
+      },
+      "sealed": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "sealed.append",
+          "reason": "step_id_unbound"
+        }
+      },
+      "stock": {
+        "classification": "missed",
+        "evidence": {
+          "failed_checks": [],
+          "layer": "verifier",
+          "smuggled_chars": 128,
+          "status": "passed"
+        }
+      },
+      "surface": "step_id",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "witnessed.append",
+          "reason": "step_id_unbound",
+          "witness_count": 0
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "anchor_count": 0,
+          "events_committed": 0,
+          "layer": "anchored.append",
+          "reason": "forbidden_character"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "anchor_count": 0,
+          "events_committed": 0,
+          "layer": "bounded.append",
+          "reason": "forbidden_character"
+        }
+      },
+      "budget": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "budget.append",
+          "reason": "forbidden_character"
+        }
+      },
+      "case_id": "objective_zero_width_payload",
+      "description": "A message encoded in zero-width characters after a benign objective.",
+      "hardened": {
+        "classification": "missed",
+        "evidence": {
+          "events_committed": 1,
+          "layer": "hardened.append"
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "quorum.append",
+          "reason": "forbidden_character",
+          "witness_counts": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "ref_binding": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "ref_binding.append",
+          "reason": "forbidden_character"
+        }
+      },
+      "sealed": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "sealed.append",
+          "reason": "forbidden_character"
+        }
+      },
+      "stock": {
+        "classification": "missed",
+        "evidence": {
+          "failed_checks": [],
+          "layer": "verifier",
+          "status": "passed"
+        }
+      },
+      "surface": "objective",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "witnessed.append",
+          "reason": "forbidden_character",
+          "witness_count": 0
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "anchor_count": 0,
+          "events_committed": 0,
+          "layer": "anchored.append",
+          "reason": "verifier_rejected"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "anchor_count": 0,
+          "events_committed": 0,
+          "layer": "bounded.append",
+          "reason": "verifier_rejected"
+        }
+      },
+      "budget": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "budget.append",
+          "reason": "verifier_rejected"
+        }
+      },
+      "case_id": "unknown_field_notes",
+      "description": "A free-form notes field outside the closed schema.",
+      "hardened": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "hardened.append",
+          "reason": "verifier_rejected"
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "quorum.append",
+          "reason": "verifier_rejected",
+          "witness_counts": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "ref_binding": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "ref_binding.append",
+          "reason": "verifier_rejected"
+        }
+      },
+      "sealed": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "sealed.append",
+          "reason": "verifier_rejected"
+        }
+      },
+      "stock": {
+        "classification": "caught",
+        "evidence": {
+          "failed_checks": [
+            "json_schema",
+            "closed_schema"
+          ],
+          "layer": "verifier",
+          "status": "rejected"
+        }
+      },
+      "surface": "closed_schema",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "witnessed.append",
+          "reason": "verifier_rejected",
+          "witness_count": 0
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "anchor_count": 0,
+          "events_committed": 0,
+          "layer": "anchored.append",
+          "reason": "objective_bytes"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "anchor_count": 0,
+          "events_committed": 0,
+          "layer": "bounded.append",
+          "reason": "objective_bytes"
+        }
+      },
+      "budget": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "budget.append",
+          "reason": "objective_bytes"
+        }
+      },
+      "case_id": "objective_overlength",
+      "description": "An objective over the 1000-char cap.",
+      "hardened": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "hardened.append",
+          "reason": "verifier_rejected"
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "quorum.append",
+          "reason": "objective_bytes",
+          "witness_counts": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "ref_binding": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "ref_binding.append",
+          "reason": "objective_bytes"
+        }
+      },
+      "sealed": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "sealed.append",
+          "reason": "objective_bytes"
+        }
+      },
+      "stock": {
+        "classification": "caught",
+        "evidence": {
+          "failed_checks": [
+            "json_schema"
+          ],
+          "layer": "verifier",
+          "status": "rejected"
+        }
+      },
+      "surface": "objective",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "witnessed.append",
+          "reason": "objective_bytes",
+          "witness_count": 0
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "anchor_count": 0,
+          "events_committed": 0,
+          "layer": "anchored.append",
+          "reason": "not_canonical_json"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "anchor_count": 0,
+          "events_committed": 0,
+          "layer": "bounded.append",
+          "reason": "not_canonical_json"
+        }
+      },
+      "budget": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "budget.append",
+          "reason": "not_canonical_json"
+        }
+      },
+      "case_id": "confidence_nan",
+      "description": "NaN confidence; NaN slips past schema min/max comparisons.",
+      "hardened": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "hardened.append",
+          "reason": "not_canonical_json"
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "quorum.append",
+          "reason": "not_canonical_json",
+          "witness_counts": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "ref_binding": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "ref_binding.append",
+          "reason": "not_canonical_json"
+        }
+      },
+      "sealed": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "sealed.append",
+          "reason": "not_canonical_json"
+        }
+      },
+      "stock": {
+        "classification": "caught",
+        "evidence": {
+          "failed_checks": [
+            "confidence"
+          ],
+          "layer": "verifier",
+          "status": "rejected"
+        }
+      },
+      "surface": "confidence",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "witnessed.append",
+          "reason": "not_canonical_json",
+          "witness_count": 0
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "anchor_count": 0,
+          "events_committed": 0,
+          "layer": "anchored.append",
+          "reason": "verifier_rejected"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "anchor_count": 0,
+          "events_committed": 0,
+          "layer": "bounded.append",
+          "reason": "verifier_rejected"
+        }
+      },
+      "budget": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "budget.append",
+          "reason": "verifier_rejected"
+        }
+      },
+      "case_id": "confidence_bool",
+      "description": "A boolean posing as a confidence number.",
+      "hardened": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "hardened.append",
+          "reason": "verifier_rejected"
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "quorum.append",
+          "reason": "verifier_rejected",
+          "witness_counts": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "ref_binding": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "ref_binding.append",
+          "reason": "verifier_rejected"
+        }
+      },
+      "sealed": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "sealed.append",
+          "reason": "verifier_rejected"
+        }
+      },
+      "stock": {
+        "classification": "caught",
+        "evidence": {
+          "failed_checks": [
+            "json_schema"
+          ],
+          "layer": "verifier",
+          "status": "rejected"
+        }
+      },
+      "surface": "confidence",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "witnessed.append",
+          "reason": "verifier_rejected",
+          "witness_count": 0
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "anchored.read_refs",
+          "read": "KeyError"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "bounded.read_refs",
+          "read": "KeyError"
+        }
+      },
+      "budget": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "budget.read_refs",
+          "read": "KeyError"
+        }
+      },
+      "case_id": "memory_ref_unsupported_scheme",
+      "description": "A ref to a scheme the store does not serve.",
+      "hardened": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "hardened.read_refs",
+          "read": "KeyError"
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "quorum.read_refs",
+          "read": "KeyError"
+        }
+      },
+      "ref_binding": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "ref_binding.read_refs",
+          "read": "KeyError"
+        }
+      },
+      "sealed": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "sealed.read_refs",
+          "read": "KeyError"
+        }
+      },
+      "stock": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "memory.read_refs",
+          "read": "KeyError",
+          "verifier_status": "passed"
+        }
+      },
+      "surface": "required_memory_refs",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "witnessed.read_refs",
+          "read": "KeyError"
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "anchored.read_refs",
+          "read": "KeyError"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "bounded.read_refs",
+          "read": "KeyError"
+        }
+      },
+      "budget": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "budget.read_refs",
+          "read": "KeyError"
+        }
+      },
+      "case_id": "memory_ref_dangling_event",
+      "description": "A ref to an event id that does not exist.",
+      "hardened": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "hardened.read_refs",
+          "read": "KeyError"
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "quorum.read_refs",
+          "read": "KeyError"
+        }
+      },
+      "ref_binding": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "ref_binding.read_refs",
+          "read": "KeyError"
+        }
+      },
+      "sealed": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "sealed.read_refs",
+          "read": "KeyError"
+        }
+      },
+      "stock": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "memory.read_refs",
+          "read": "KeyError",
+          "verifier_status": "passed"
+        }
+      },
+      "surface": "required_memory_refs",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "witnessed.read_refs",
+          "read": "KeyError"
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "anchored.read_refs",
+          "read": "KeyError"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "bounded.read_refs",
+          "read": "KeyError"
+        }
+      },
+      "budget": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "budget.read_refs",
+          "read": "KeyError"
+        }
+      },
+      "case_id": "memory_ref_traversal",
+      "description": "A path-traversal shaped event ref.",
+      "hardened": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "hardened.read_refs",
+          "read": "KeyError"
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "quorum.read_refs",
+          "read": "KeyError"
+        }
+      },
+      "ref_binding": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "ref_binding.read_refs",
+          "read": "KeyError"
+        }
+      },
+      "sealed": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "sealed.read_refs",
+          "read": "KeyError"
+        }
+      },
+      "stock": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "memory.read_refs",
+          "read": "KeyError",
+          "verifier_status": "passed"
+        }
+      },
+      "surface": "required_memory_refs",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "witnessed.read_refs",
+          "read": "KeyError"
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "anchored.read_refs",
+          "reason": "memory_ref_count"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "bounded.read_refs",
+          "reason": "memory_ref_count"
+        }
+      },
+      "budget": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "budget.read_refs",
+          "reason": "memory_ref_count"
+        }
+      },
+      "case_id": "memory_ref_amplification",
+      "description": "500 copies of episodic:latest; refs have no maxItems or dedup.",
+      "hardened": {
+        "classification": "missed",
+        "evidence": {
+          "distinct_events_in_store": 1,
+          "events_resolved": 500,
+          "layer": "hardened.read_refs",
+          "refs_requested": 500
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "quorum.read_refs",
+          "reason": "memory_ref_count"
+        }
+      },
+      "ref_binding": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "ref_binding.read_refs",
+          "reason": "memory_ref_count"
+        }
+      },
+      "sealed": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "sealed.read_refs",
+          "reason": "memory_ref_count"
+        }
+      },
+      "stock": {
+        "classification": "missed",
+        "evidence": {
+          "distinct_events_in_store": 1,
+          "events_resolved": 500,
+          "layer": "memory.read_refs",
+          "refs_requested": 500,
+          "verifier_status": "passed"
+        }
+      },
+      "surface": "required_memory_refs",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "witnessed.read_refs",
+          "reason": "memory_ref_count"
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [],
+          "layer": "anchored.orchestrator",
+          "reason": "step_id_unbound"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [],
+          "layer": "bounded.orchestrator",
+          "reason": "step_id_unbound"
+        }
+      },
+      "budget": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [],
+          "layer": "budget.orchestrator",
+          "reason": "step_id_unbound"
+        }
+      },
+      "case_id": "orchestrator_step_id_forgery",
+      "description": "node-1 commits outputs that claim to be node-7's.",
+      "hardened": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [],
+          "layer": "hardened.orchestrator",
+          "reason": "step_id_unbound"
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [],
+          "layer": "quorum.orchestrator",
+          "reason": "step_id_unbound"
+        }
+      },
+      "ref_binding": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [],
+          "layer": "ref_binding.orchestrator",
+          "reason": "step_id_unbound"
+        }
+      },
+      "sealed": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [],
+          "layer": "sealed.orchestrator",
+          "reason": "step_id_unbound"
+        }
+      },
+      "stock": {
+        "classification": "missed",
+        "evidence": {
+          "committed_step_ids": [
+            "node-7:1",
+            "node-7:2",
+            "node-7:3"
+          ],
+          "events_committed": 3,
+          "layer": "orchestrator",
+          "node_ids": [
+            "node-1"
+          ]
+        }
+      },
+      "surface": "step_id",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [],
+          "layer": "witnessed.orchestrator",
+          "reason": "step_id_unbound"
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [
+            "node-1:1"
+          ],
+          "layer": "anchored.orchestrator",
+          "reason": "step_id_unbound"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [
+            "node-1:1"
+          ],
+          "layer": "bounded.orchestrator",
+          "reason": "step_id_unbound"
+        }
+      },
+      "budget": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [
+            "node-1:1"
+          ],
+          "layer": "budget.orchestrator",
+          "reason": "step_id_unbound"
+        }
+      },
+      "case_id": "orchestrator_step_id_replay",
+      "description": "Every round reuses the same step_id.",
+      "hardened": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [
+            "node-1:1"
+          ],
+          "layer": "hardened.orchestrator",
+          "reason": "step_id_unbound"
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [
+            "node-1:1"
+          ],
+          "layer": "quorum.orchestrator",
+          "reason": "step_id_unbound"
+        }
+      },
+      "ref_binding": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [
+            "node-1:1"
+          ],
+          "layer": "ref_binding.orchestrator",
+          "reason": "step_id_unbound"
+        }
+      },
+      "sealed": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [
+            "node-1:1"
+          ],
+          "layer": "sealed.orchestrator",
+          "reason": "step_id_unbound"
+        }
+      },
+      "stock": {
+        "classification": "missed",
+        "evidence": {
+          "committed_step_ids": [
+            "node-1:1",
+            "node-1:1",
+            "node-1:1"
+          ],
+          "events_committed": 3,
+          "layer": "orchestrator",
+          "node_ids": [
+            "node-1"
+          ]
+        }
+      },
+      "surface": "step_id",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [
+            "node-1:1"
+          ],
+          "layer": "witnessed.orchestrator",
+          "reason": "step_id_unbound"
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [],
+          "layer": "anchored.orchestrator",
+          "reason": "verifier_rejected"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [],
+          "layer": "bounded.orchestrator",
+          "reason": "verifier_rejected"
+        }
+      },
+      "budget": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [],
+          "layer": "budget.orchestrator",
+          "reason": "verifier_rejected"
+        }
+      },
+      "case_id": "orchestrator_non_dict_output",
+      "description": "A node returns a list instead of an object.",
+      "hardened": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [],
+          "layer": "hardened.orchestrator",
+          "reason": "verifier_rejected"
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [],
+          "layer": "quorum.orchestrator",
+          "reason": "verifier_rejected"
+        }
+      },
+      "ref_binding": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [],
+          "layer": "ref_binding.orchestrator",
+          "reason": "verifier_rejected"
+        }
+      },
+      "sealed": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [],
+          "layer": "sealed.orchestrator",
+          "reason": "verifier_rejected"
+        }
+      },
+      "stock": {
+        "classification": "caught",
+        "evidence": {
+          "error": "ValueError",
+          "events_committed": 0,
+          "layer": "orchestrator"
+        }
+      },
+      "surface": "object",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "committed_step_ids": [],
+          "layer": "witnessed.orchestrator",
+          "reason": "verifier_rejected"
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "anchor_count": 0,
+          "events_committed": 0,
+          "layer": "anchored.append",
+          "reason": "objective_bytes"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "anchor_count": 0,
+          "events_committed": 0,
+          "layer": "bounded.append",
+          "reason": "objective_bytes"
+        }
+      },
+      "budget": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "budget.append",
+          "reason": "objective_bytes"
+        }
+      },
+      "case_id": "dict_subclass_toctou",
+      "description": "A dict subclass shows the verifier a clean objective but serializes a 5000-char one.",
+      "hardened": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "hardened.append",
+          "reason": "verifier_rejected"
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "quorum.append",
+          "reason": "objective_bytes",
+          "witness_counts": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "ref_binding": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "ref_binding.append",
+          "reason": "objective_bytes"
+        }
+      },
+      "sealed": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "sealed.append",
+          "reason": "objective_bytes"
+        }
+      },
+      "stock": {
+        "classification": "missed",
+        "evidence": {
+          "committed": true,
+          "layer": "memory.append",
+          "reverify_failed_checks": [
+            "json_schema"
+          ],
+          "stored_objective_chars": 5000,
+          "stored_output_reverifies": false
+        }
+      },
+      "surface": "memory.append",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "witnessed.append",
+          "reason": "objective_bytes",
+          "witness_count": 0
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "anchor_count": 0,
+          "events_committed": 0,
+          "layer": "anchored.append",
+          "reason": "memory_ref_unbound"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "anchor_count": 0,
+          "events_committed": 0,
+          "layer": "bounded.append",
+          "reason": "memory_ref_unbound"
+        }
+      },
+      "budget": {
+        "classification": "missed",
+        "evidence": {
+          "events_committed": 1,
+          "layer": "budget.append"
+        }
+      },
+      "case_id": "memory_ref_payload_channel",
+      "description": "16 distinct 256-char refs (4096 bytes) that resolve to no committed event.",
+      "hardened": {
+        "classification": "missed",
+        "evidence": {
+          "events_committed": 1,
+          "layer": "hardened.append"
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "quorum.append",
+          "reason": "memory_ref_unbound",
+          "witness_counts": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "ref_binding": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "ref_binding.append",
+          "reason": "memory_ref_unbound"
+        }
+      },
+      "sealed": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "sealed.append",
+          "reason": "memory_ref_unbound"
+        }
+      },
+      "stock": {
+        "classification": "missed",
+        "evidence": {
+          "events_committed": 1,
+          "layer": "stock.append"
+        }
+      },
+      "surface": "required_memory_refs",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "witnessed.append",
+          "reason": "memory_ref_unbound",
+          "witness_count": 0
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "anchor_count": 0,
+          "events_committed": 0,
+          "layer": "anchored.append",
+          "reason": "confidence_precision"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "anchor_count": 0,
+          "events_committed": 0,
+          "layer": "bounded.append",
+          "reason": "confidence_precision"
+        }
+      },
+      "budget": {
+        "classification": "missed",
+        "evidence": {
+          "events_committed": 1,
+          "layer": "budget.append"
+        }
+      },
+      "case_id": "confidence_mantissa_channel",
+      "description": "A confidence near 0.5 whose low 32 mantissa bits carry a payload.",
+      "hardened": {
+        "classification": "missed",
+        "evidence": {
+          "events_committed": 1,
+          "layer": "hardened.append"
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "quorum.append",
+          "reason": "confidence_precision",
+          "witness_counts": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "ref_binding": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "ref_binding.append",
+          "reason": "confidence_precision"
+        }
+      },
+      "sealed": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "sealed.append",
+          "reason": "confidence_precision"
+        }
+      },
+      "stock": {
+        "classification": "missed",
+        "evidence": {
+          "events_committed": 1,
+          "layer": "stock.append"
+        }
+      },
+      "surface": "confidence",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "events_committed": 0,
+          "layer": "witnessed.append",
+          "reason": "confidence_precision",
+          "witness_count": 0
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "anchored.read",
+          "reason": "log_seal_mismatch"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "bounded.read",
+          "reason": "log_seal_mismatch"
+        }
+      },
+      "budget": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 3,
+          "forged_objective_served": true,
+          "latest_step_id": "node-1:3",
+          "layer": "budget.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3"
+          ]
+        }
+      },
+      "case_id": "log_event_rewrite",
+      "description": "A committed objective is edited on disk after commit.",
+      "hardened": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 3,
+          "forged_objective_served": true,
+          "latest_step_id": "node-1:3",
+          "layer": "hardened.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3"
+          ]
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "quorum.read",
+          "reason": "log_seal_mismatch"
+        }
+      },
+      "ref_binding": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 3,
+          "forged_objective_served": true,
+          "latest_step_id": "node-1:3",
+          "layer": "ref_binding.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3"
+          ]
+        }
+      },
+      "sealed": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "sealed.read",
+          "reason": "log_seal_mismatch"
+        }
+      },
+      "stock": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 3,
+          "forged_objective_served": true,
+          "latest_step_id": "node-1:3",
+          "layer": "stock.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3"
+          ]
+        }
+      },
+      "surface": "events.jsonl",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "witnessed.read",
+          "reason": "log_seal_mismatch"
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "anchored.read",
+          "reason": "log_seal_mismatch"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "bounded.read",
+          "reason": "log_seal_mismatch"
+        }
+      },
+      "budget": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 4,
+          "forged_objective_served": false,
+          "latest_step_id": "node-9:3",
+          "layer": "budget.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3",
+            "node-9:3"
+          ]
+        }
+      },
+      "case_id": "log_event_insert",
+      "description": "A forged line that never passed the verifier is appended on disk.",
+      "hardened": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 4,
+          "forged_objective_served": false,
+          "latest_step_id": "node-9:3",
+          "layer": "hardened.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3",
+            "node-9:3"
+          ]
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "quorum.read",
+          "reason": "log_seal_mismatch"
+        }
+      },
+      "ref_binding": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 4,
+          "forged_objective_served": false,
+          "latest_step_id": "node-9:3",
+          "layer": "ref_binding.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3",
+            "node-9:3"
+          ]
+        }
+      },
+      "sealed": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "sealed.read",
+          "reason": "log_seal_mismatch"
+        }
+      },
+      "stock": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 4,
+          "forged_objective_served": false,
+          "latest_step_id": "node-9:3",
+          "layer": "stock.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3",
+            "node-9:3"
+          ]
+        }
+      },
+      "surface": "events.jsonl",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "witnessed.read",
+          "reason": "log_seal_mismatch"
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "anchored.read",
+          "reason": "log_seal_mismatch"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "bounded.read",
+          "reason": "log_seal_mismatch"
+        }
+      },
+      "budget": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 3,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:3",
+          "layer": "budget.read",
+          "served_step_ids": [
+            "node-1:2",
+            "node-1:1",
+            "node-1:3"
+          ]
+        }
+      },
+      "case_id": "log_event_reorder",
+      "description": "The first two committed lines are swapped on disk.",
+      "hardened": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 3,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:3",
+          "layer": "hardened.read",
+          "served_step_ids": [
+            "node-1:2",
+            "node-1:1",
+            "node-1:3"
+          ]
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "quorum.read",
+          "reason": "log_seal_mismatch"
+        }
+      },
+      "ref_binding": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 3,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:3",
+          "layer": "ref_binding.read",
+          "served_step_ids": [
+            "node-1:2",
+            "node-1:1",
+            "node-1:3"
+          ]
+        }
+      },
+      "sealed": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "sealed.read",
+          "reason": "log_seal_mismatch"
+        }
+      },
+      "stock": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 3,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:3",
+          "layer": "stock.read",
+          "served_step_ids": [
+            "node-1:2",
+            "node-1:1",
+            "node-1:3"
+          ]
+        }
+      },
+      "surface": "events.jsonl",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "witnessed.read",
+          "reason": "log_seal_mismatch"
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "anchored.read",
+          "reason": "anchor_rollback"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "bounded.read",
+          "reason": "anchor_rollback"
+        }
+      },
+      "budget": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "budget.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "case_id": "log_tail_truncation",
+      "description": "The last committed line is dropped; the rest is a valid prefix.",
+      "hardened": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "hardened.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "quorum.read",
+          "reason": "anchor_rollback"
+        }
+      },
+      "ref_binding": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "ref_binding.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "sealed": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "sealed.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "stock": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "stock.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "surface": "events.jsonl",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "witnessed.read",
+          "reason": "anchor_rollback"
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "anchored.read",
+          "reason": "anchor_head_mismatch"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "bounded.read",
+          "reason": "anchor_head_mismatch"
+        }
+      },
+      "budget": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 3,
+          "forged_objective_served": true,
+          "latest_step_id": "node-1:3",
+          "layer": "budget.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3"
+          ]
+        }
+      },
+      "case_id": "log_reseal_rewrite",
+      "description": "A committed objective is edited and every later seal recomputed.",
+      "hardened": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 3,
+          "forged_objective_served": true,
+          "latest_step_id": "node-1:3",
+          "layer": "hardened.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3"
+          ]
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "quorum.read",
+          "reason": "anchor_head_mismatch"
+        }
+      },
+      "ref_binding": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 3,
+          "forged_objective_served": true,
+          "latest_step_id": "node-1:3",
+          "layer": "ref_binding.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3"
+          ]
+        }
+      },
+      "sealed": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 3,
+          "forged_objective_served": true,
+          "latest_step_id": "node-1:3",
+          "layer": "sealed.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3"
+          ]
+        }
+      },
+      "stock": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 3,
+          "forged_objective_served": true,
+          "latest_step_id": "node-1:3",
+          "layer": "stock.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3"
+          ]
+        }
+      },
+      "surface": "events.jsonl",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "witnessed.read",
+          "reason": "anchor_head_mismatch"
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "missed",
+        "evidence": {
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "anchored.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "bounded": {
+        "classification": "missed",
+        "evidence": {
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "bounded.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "budget": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "layer": "budget.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "case_id": "anchor_stale_rollback",
+      "description": "The last line is dropped and the successor is handed the older matching anchor.",
+      "hardened": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "layer": "hardened.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "quorum.read",
+          "reason": "anchor_stale"
+        }
+      },
+      "ref_binding": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "layer": "ref_binding.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "sealed": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "layer": "sealed.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "stock": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "layer": "stock.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "surface": "anchor",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "witnessed.read",
+          "reason": "anchor_stale"
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "anchored.read",
+          "reason": "anchor_head_mismatch"
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "bounded.read",
+          "reason": "anchor_head_mismatch"
+        }
+      },
+      "budget": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "layer": "budget.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3"
+          ]
+        }
+      },
+      "case_id": "anchor_forged_head",
+      "description": "The log is honest; the anchor handed forward has a head matching no prefix.",
+      "hardened": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "layer": "hardened.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3"
+          ]
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "quorum.read",
+          "reason": "anchor_head_mismatch"
+        }
+      },
+      "ref_binding": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "layer": "ref_binding.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3"
+          ]
+        }
+      },
+      "sealed": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "layer": "sealed.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3"
+          ]
+        }
+      },
+      "stock": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "layer": "stock.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3"
+          ]
+        }
+      },
+      "surface": "anchor",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "witnessed.read",
+          "reason": "anchor_head_mismatch"
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "missed",
+        "evidence": {
+          "events_on_disk": 4,
+          "events_served": 4,
+          "forged_objective_served": true,
+          "latest_step_id": "node-9:3",
+          "layer": "anchored.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3",
+            "node-9:3"
+          ]
+        }
+      },
+      "bounded": {
+        "classification": "caught",
+        "evidence": {
+          "events_on_disk": 4,
+          "events_served": 3,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:3",
+          "layer": "bounded.read",
+          "reason": "unanchored_tail_not_served",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3"
+          ]
+        }
+      },
+      "budget": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "events_on_disk": 4,
+          "events_served": 4,
+          "forged_objective_served": true,
+          "latest_step_id": "node-9:3",
+          "layer": "budget.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3",
+            "node-9:3"
+          ]
+        }
+      },
+      "case_id": "anchor_resealed_extension",
+      "description": "A forged line is appended past the held anchor with a recomputed seal.",
+      "hardened": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "events_on_disk": 4,
+          "events_served": 4,
+          "forged_objective_served": true,
+          "latest_step_id": "node-9:3",
+          "layer": "hardened.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3",
+            "node-9:3"
+          ]
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "events_on_disk": 4,
+          "events_served": 3,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:3",
+          "layer": "quorum.read",
+          "reason": "unanchored_tail_not_served",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3"
+          ]
+        }
+      },
+      "ref_binding": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "events_on_disk": 4,
+          "events_served": 4,
+          "forged_objective_served": true,
+          "latest_step_id": "node-9:3",
+          "layer": "ref_binding.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3",
+            "node-9:3"
+          ]
+        }
+      },
+      "sealed": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "events_on_disk": 4,
+          "events_served": 4,
+          "forged_objective_served": true,
+          "latest_step_id": "node-9:3",
+          "layer": "sealed.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3",
+            "node-9:3"
+          ]
+        }
+      },
+      "stock": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "events_on_disk": 4,
+          "events_served": 4,
+          "forged_objective_served": true,
+          "latest_step_id": "node-9:3",
+          "layer": "stock.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3",
+            "node-9:3"
+          ]
+        }
+      },
+      "surface": "anchor",
+      "witnessed": {
+        "classification": "caught",
+        "evidence": {
+          "events_on_disk": 4,
+          "events_served": 3,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:3",
+          "layer": "witnessed.read",
+          "reason": "unanchored_tail_not_served",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2",
+            "node-1:3"
+          ]
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "missed",
+        "evidence": {
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "anchored.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "bounded": {
+        "classification": "missed",
+        "evidence": {
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "bounded.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "budget": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "budget.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "case_id": "witness_rollback",
+      "description": "The last line is dropped and the witness file is rolled back with it.",
+      "hardened": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "hardened.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "quorum.read",
+          "reason": "anchor_stale"
+        }
+      },
+      "ref_binding": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "ref_binding.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "sealed": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "sealed.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "stock": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "stock.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "surface": "witness",
+      "witnessed": {
+        "classification": "missed",
+        "evidence": {
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "witnessed.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "missed",
+        "evidence": {
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "anchored.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "bounded": {
+        "classification": "missed",
+        "evidence": {
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "bounded.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "budget": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "budget.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "case_id": "quorum_partial_rollback",
+      "description": "The last line is dropped and every witness replica but one is rolled back with it.",
+      "hardened": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "hardened.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "quorum": {
+        "classification": "caught",
+        "evidence": {
+          "layer": "quorum.read",
+          "reason": "anchor_stale"
+        }
+      },
+      "ref_binding": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "ref_binding.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "sealed": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "sealed.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "stock": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "stock.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "surface": "witness",
+      "witnessed": {
+        "classification": "missed",
+        "evidence": {
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "witnessed.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      }
+    },
+    {
+      "anchored": {
+        "classification": "missed",
+        "evidence": {
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "anchored.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "bounded": {
+        "classification": "missed",
+        "evidence": {
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "bounded.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "budget": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "budget.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "case_id": "quorum_full_rollback",
+      "description": "The last line is dropped and every witness replica is rolled back with it.",
+      "hardened": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "hardened.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "quorum": {
+        "classification": "missed",
+        "evidence": {
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "quorum.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "ref_binding": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "ref_binding.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "sealed": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "sealed.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "stock": {
+        "classification": "missed",
+        "evidence": {
+          "anchor_checked": false,
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "stock.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      },
+      "surface": "witness",
+      "witnessed": {
+        "classification": "missed",
+        "evidence": {
+          "events_on_disk": 2,
+          "events_served": 2,
+          "forged_objective_served": false,
+          "latest_step_id": "node-1:2",
+          "layer": "witnessed.read",
+          "served_step_ids": [
+            "node-1:1",
+            "node-1:2"
+          ]
+        }
+      }
+    }
+  ],
+  "sealed_policy": {
+    "chain": "sha256(prev_seal || canonical event bytes)",
+    "genesis": "0000000000000000000000000000000000000000000000000000000000000000",
+    "verified_on": [
+      "events",
+      "read_refs",
+      "append"
+    ]
+  },
+  "summary": {
+    "anchored": {
+      "caught": 24,
+      "missed": 6
+    },
+    "bounded": {
+      "caught": 25,
+      "missed": 5
+    },
+    "budget": {
+      "caught": 16,
+      "missed": 14
+    },
+    "cases": 30,
+    "hardened": {
+      "caught": 12,
+      "missed": 18
+    },
+    "quorum": {
+      "caught": 28,
+      "missed": 2
+    },
+    "quorum_flipped_from_witnessed": [
+      "quorum_partial_rollback",
+      "witness_rollback"
+    ],
+    "quorum_regressed_from_witnessed": [],
+    "quorum_still_missed": [
+      "objective_reasoning_smuggle",
+      "quorum_full_rollback"
+    ],
+    "ref_binding": {
+      "caught": 18,
+      "missed": 12
+    },
+    "sealed": {
+      "caught": 21,
+      "missed": 9
+    },
+    "stock": {
+      "caught": 8,
+      "missed": 22
+    },
+    "witnessed": {
+      "caught": 26,
+      "missed": 4
+    }
+  },
+  "targets": [
+    "stock",
+    "hardened",
+    "budget",
+    "ref_binding",
+    "sealed",
+    "anchored",
+    "bounded",
+    "witnessed",
+    "quorum"
+  ],
+  "witnessed_policy": {
+    "advances": "on each of the store's own appends, or to a verified caller anchor ahead of it",
+    "refuses": [
+      "anchor_stale",
+      "anchor_witness_fork",
+      "witness_regress",
+      "witness_fork",
+      "witness_malformed"
+    ],
+    "witness": "highest anchor ever issued, in its own file beside events.jsonl"
+  }
+}
