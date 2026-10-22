@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["guess"],
+  "properties": {
+    "guess": {"type": "string", "enum": ["NORTH", "SOUTH"]}
+  }
+}

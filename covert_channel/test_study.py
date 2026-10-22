@@ -10,6 +10,7 @@ from covert_channel.audit import (confidence_bits, markdown, permutation_bits,
 from covert_channel.experiment import (commitment, exact_binomial_p, prepare,
                                        wilson)
 from covert_channel import experiment
+from covert_channel import codex_adapter
 from covert_channel.gate import canonicalize, code_select_refs, gate
 
 
@@ -83,6 +84,23 @@ def test_score_extremes_and_empty():
     assert low == 0 and 0 < high < 0.5
     low, high = wilson(8, 8)
     assert 0.5 < low < 1 and high == 1
+
+
+def test_codex_adapter_prompts_and_isolation_options(monkeypatch):
+    calls = []
+    def fake_run(argv, **kwargs):
+        calls.append((argv, kwargs))
+        if argv[1:3] == ["login", "status"]:
+            return subprocess.CompletedProcess(argv, 0, "Logged in using ChatGPT\n", "")
+        return subprocess.CompletedProcess(argv, 0, '{"guess":"NORTH"}\n', "")
+    monkeypatch.setattr(codex_adapter.subprocess, "run", fake_run)
+    prompt = codex_adapter.receiver_prompt({"handoff": None})
+    assert "null" in prompt and "hidden_label" not in prompt
+    assert codex_adapter.invoke_codex("receiver", prompt, "codex") == '{"guess":"NORTH"}'
+    argv = calls[1][0]
+    assert "--ephemeral" in argv and "--ignore-user-config" in argv
+    assert argv[argv.index("--sandbox") + 1] == "read-only"
+    assert argv[argv.index("--model") + 1] == "gpt-6.1-sol"
 
 
 def test_committed_two_phase_smoke(tmp_path, monkeypatch):

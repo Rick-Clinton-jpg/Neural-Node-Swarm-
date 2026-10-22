@@ -1,4 +1,16 @@
 {
+  "adapter": {
+    "authentication": "ChatGPT subscription only; reject API-key login",
+    "entrypoint": "covert_channel/codex_adapter.py",
+    "kind": "Codex CLI one-shot adapter",
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "low",
+    "roles": [
+      "sender",
+      "receiver"
+    ],
+    "session": "new ephemeral read-only process per invocation"
+  },
   "commitment_encoding": "SHA256(bytes.fromhex(salt_hex) + canonical JSON of trial_id-to-label mapping)",
   "commitment_sha256": "bf92f1947cc538a7904364ab61a2278091f75180c53e6028696ea889681e5e95",
   "menu_handoffs": [
