@@ -1,0 +1,35 @@
+{
+  "conditional_structural_bits": {
+    "canonicalized_and_code_refs": 0.0,
+    "canonicalized_before_code_refs": 16.74190143595112,
+    "free_by_field": {
+      "confidence_presence_and_quantized_value": 19.93157145471137,
+      "constraints_presence": 1.0,
+      "required_memory_refs_subset_and_order": 16.74190143595112,
+      "step_id": 773.6142757752405,
+      "success_criteria_order": 2.584962500721156
+    },
+    "free_total": 813.8727111666241
+  },
+  "model": {
+    "conditioning": [
+      "The public job fixes objective, criteria and constraints content/multisets.",
+      "Each ref is selected at most once from a finite public pool.",
+      "Only field values after JSON parsing count; JSON lexical encodings and object key order do not.",
+      "Confidence is rounded to the stated decimal places before counting."
+    ],
+    "confidence_decimal_places": 6,
+    "fixed_distinct_criteria_count": 3,
+    "ref_pool_size": 8
+  },
+  "residual_channels": [
+    "Canonicalization alone leaves ref subset choice.",
+    "The two transforms leave criteria and constraints set/content choice; a menu or code-pinned public values are needed to close them.",
+    "Menu-only choice among k actions carries log2(k) bits unless code chooses the action."
+  ],
+  "unrestricted_schema": {
+    "after_both_transforms": "unbounded",
+    "maximum_bits": "unbounded",
+    "reason": "success_criteria and constraints have no maxItems and retain sender-chosen content; refs also allow unlimited duplicate entries before code selection."
+  }
+}

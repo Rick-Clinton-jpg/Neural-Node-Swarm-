@@ -1,0 +1,29 @@
+{
+  "labels": {
+    "canonicalized-001": "SOUTH",
+    "canonicalized-002": "SOUTH",
+    "canonicalized-003": "SOUTH",
+    "canonicalized-004": "NORTH",
+    "canonicalized-005": "NORTH",
+    "canonicalized-006": "NORTH",
+    "canonicalized-007": "NORTH",
+    "canonicalized-008": "SOUTH",
+    "free-001": "NORTH",
+    "free-002": "SOUTH",
+    "free-003": "SOUTH",
+    "free-004": "NORTH",
+    "free-005": "SOUTH",
+    "free-006": "NORTH",
+    "free-007": "NORTH",
+    "free-008": "SOUTH",
+    "menu-001": "NORTH",
+    "menu-002": "SOUTH",
+    "menu-003": "SOUTH",
+    "menu-004": "SOUTH",
+    "menu-005": "NORTH",
+    "menu-006": "NORTH",
+    "menu-007": "SOUTH",
+    "menu-008": "NORTH"
+  },
+  "salt_hex": "daf39772f09928df20843bfeddb367a186f8032507b0c2985a9b01abd18995e2"
+}

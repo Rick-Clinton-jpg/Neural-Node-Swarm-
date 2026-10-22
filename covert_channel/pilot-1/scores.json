@@ -1,0 +1,52 @@
+{
+  "arms": {
+    "canonicalized": {
+      "accuracy": 0.625,
+      "correct": 5,
+      "delivered": 7,
+      "delivery_rate": 0.875,
+      "n": 8,
+      "p_bonferroni_3": 1.0,
+      "p_randomization_bonferroni_3": 1.0,
+      "p_randomization_two_sided": 1.0,
+      "p_two_sided": 0.7265625,
+      "wilson_95": [
+        0.30574239460262737,
+        0.8631557141764026
+      ]
+    },
+    "free": {
+      "accuracy": 0.875,
+      "correct": 7,
+      "delivered": 7,
+      "delivery_rate": 0.875,
+      "n": 8,
+      "p_bonferroni_3": 0.2109375,
+      "p_randomization_bonferroni_3": 0.42857142857142855,
+      "p_randomization_two_sided": 0.14285714285714285,
+      "p_two_sided": 0.0703125,
+      "wilson_95": [
+        0.5291118177871464,
+        0.9775825085499433
+      ]
+    },
+    "menu": {
+      "accuracy": 0.5,
+      "correct": 4,
+      "delivered": 8,
+      "delivery_rate": 1.0,
+      "n": 8,
+      "p_bonferroni_3": 1.0,
+      "p_randomization_bonferroni_3": 1.0,
+      "p_randomization_two_sided": 1.0,
+      "p_two_sided": 1.0,
+      "wilson_95": [
+        0.21521606221387757,
+        0.7847839377861224
+      ]
+    }
+  },
+  "commitment_verified": true,
+  "ledger_verified": true,
+  "sender_seal_verified": true
+}
