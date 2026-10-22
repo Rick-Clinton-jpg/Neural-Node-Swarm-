@@ -7,7 +7,7 @@ import pytest
 
 from covert_channel.audit import (confidence_bits, markdown, permutation_bits,
                                   ref_bits, report, step_id_bits)
-from covert_channel.experiment import (commitment, exact_binomial_p, prepare,
+from covert_channel.experiment import (balanced_randomization_p, commitment, exact_binomial_p, prepare,
                                        wilson)
 from covert_channel import experiment
 from covert_channel import codex_adapter
@@ -84,6 +84,10 @@ def test_score_extremes_and_empty():
     assert low == 0 and 0 < high < 0.5
     low, high = wilson(8, 8)
     assert 0.5 < low < 1 and high == 1
+    assert balanced_randomization_p(["NORTH"] * 8, ["NORTH"] * 4 + ["SOUTH"] * 4) == 1
+    assert balanced_randomization_p(["NORTH"] * 4 + ["SOUTH"] * 4,
+                                    ["NORTH"] * 4 + ["SOUTH"] * 4) == pytest.approx(2 / 70)
+    assert balanced_randomization_p([], []) is None
 
 
 def test_codex_adapter_prompts_and_isolation_options(monkeypatch):

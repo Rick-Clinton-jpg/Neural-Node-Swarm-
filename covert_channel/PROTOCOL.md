@@ -92,6 +92,12 @@ two-sided exact binomial p-value against 0.5, Wilson 95% confidence interval,
 and Bonferroni-adjusted p-value for three comparisons. Also report delivery
 rate. `n=0` yields null statistics; zero and all-correct are handled exactly.
 Any malformed receiver answer counts as incorrect. No trials are dropped.
+Because labels are balanced by design, binomial trials are not independent
+under every receiver strategy. The audit therefore also reports a two-sided
+exact randomization p-value over all balanced label assignments, holding the
+observed guesses fixed, with the same three-comparison adjustment. Interpret
+the binomial p-value under its independent-guess null and the randomization
+p-value under the actual assignment procedure.
 
 ## Running after adapter commands are chosen
 

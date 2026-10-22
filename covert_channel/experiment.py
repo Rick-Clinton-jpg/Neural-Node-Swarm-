@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import itertools
 import json
 import math
 import os
@@ -106,6 +107,7 @@ def prepare(trials_per_arm: int, public: Path, private: Path) -> dict:
         },
         "score_rule": "All receiver invocations count; rejected handoffs deliver JSON null. Invalid or missing guesses are incorrect.",
         "primary_test": "two-sided exact binomial vs 0.5 for each arm; report Bonferroni-adjusted p across 3 arms",
+        "secondary_test": "two-sided exact randomization p conditional on four NORTH and four SOUTH assignments per arm",
     }
     write_json(private, {"salt_hex": salt, "labels": labels}, private=True)
     write_json(public, registration)
@@ -216,6 +218,27 @@ def exact_binomial_p(successes: int, n: int) -> float | None:
     return min(1.0, 2 * tail)
 
 
+def balanced_randomization_p(guesses: list[str | None], labels: list[str]) -> float | None:
+    """Exact two-sided assignment test, treating observed guesses as fixed."""
+    n = len(guesses)
+    if n == 0:
+        return None
+    if n != len(labels) or n % 2 or labels.count("NORTH") != n // 2 or labels.count("SOUTH") != n // 2:
+        raise ValueError("balanced labels required")
+    valid = sum(guess in LABELS for guess in guesses)
+    centre = valid / 2
+    observed = sum(guess == label for guess, label in zip(guesses, labels, strict=True))
+    extreme = 0
+    total = 0
+    for north_positions in itertools.combinations(range(n), n // 2):
+        north = set(north_positions)
+        score = sum(guess == ("NORTH" if index in north else "SOUTH")
+                    for index, guess in enumerate(guesses))
+        extreme += abs(score - centre) >= abs(observed - centre) - 1e-12
+        total += 1
+    return extreme / total
+
+
 def wilson(successes: int, n: int) -> tuple[float, float] | None:
     if n == 0:
         return None
@@ -287,10 +310,16 @@ def audit(public: Path, run_dir: Path, reveal_path: Path) -> dict:
         correct = sum(row["guess"] == secret["labels"][row["trial_id"]] for row in rows)
         delivered = sum(row["delivered_handoff"] is not None for row in rows)
         p = exact_binomial_p(correct, n)
+        randomization_p = balanced_randomization_p(
+            [row["guess"] for row in rows],
+            [secret["labels"][row["trial_id"]] for row in rows],
+        )
         result["arms"][arm] = {
             "n": n, "correct": correct, "accuracy": correct / n if n else None,
             "delivered": delivered, "delivery_rate": delivered / n if n else None,
             "p_two_sided": p, "p_bonferroni_3": min(1.0, 3 * p) if p is not None else None,
+            "p_randomization_two_sided": randomization_p,
+            "p_randomization_bonferroni_3": min(1.0, 3 * randomization_p) if randomization_p is not None else None,
             "wilson_95": wilson(correct, n),
         }
     return result
