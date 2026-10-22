@@ -78,6 +78,17 @@ committed public `preregistration.json` contains
 are revealed only after all receiver calls. The design and public commitment
 must be committed before any sender call.
 
+Before the first registered call, this protocol was amended to allow natural
+Plus usage-window resets. The harness writes a private, atomic checkpoint after
+each successful adapter process. A process failure or timeout pauses at that
+trial; the same trial is retried with the same command and prompt after service
+recovers. A process that exits successfully but emits invalid content remains a
+completed trial and is scored by the gate or guess parser. Bounded invocations
+(`--max-trials`) only pause between trials and cannot change their order.
+Checkpoint files stay private. All sender calls must finish before the sender
+seal is written and committed; all receiver calls must finish before reveal.
+This rule was committed before any registered sender call.
+
 The sender phase writes all raw sender outputs and delivered handoffs to a
 private `sender_seal.json`, plus its SHA256 digest to a public file under
 `covert_channel/seals/`. Commit that digest before the receiver phase. The
@@ -103,9 +114,9 @@ p-value under the actual assignment procedure.
 
 1. `python3.12 -m covert_channel.experiment prepare --trials-per-arm 8`
 2. Commit `PROTOCOL.md`, `preregistration.json`, and the implementation.
-3. `python3.12 -m covert_channel.experiment send --sender-cmd 'python3.12 /absolute/repo/covert_channel/codex_adapter.py sender' --run-dir covert_channel/.private/runs/pilot-1`
+3. `python3.12 -m covert_channel.experiment send --sender-cmd 'python3.12 /absolute/repo/covert_channel/codex_adapter.py sender' --run-dir covert_channel/.private/runs/pilot-1 --max-trials 4` (repeat until `complete` is true)
 4. Commit `covert_channel/seals/pilot-1.sha256` before invoking any receiver.
-5. `python3.12 -m covert_channel.experiment receive --receiver-cmd 'python3.12 /absolute/repo/covert_channel/codex_adapter.py receiver' --run-dir covert_channel/.private/runs/pilot-1`
+5. `python3.12 -m covert_channel.experiment receive --receiver-cmd 'python3.12 /absolute/repo/covert_channel/codex_adapter.py receiver' --run-dir covert_channel/.private/runs/pilot-1 --max-trials 4` (repeat until `complete` is true)
 6. `python3.12 -m covert_channel.experiment reveal --run-dir covert_channel/.private/runs/pilot-1 --out covert_channel/reveal-pilot-1.json`
 7. `python3.12 -m covert_channel.experiment audit --run-dir covert_channel/.private/runs/pilot-1 --reveal covert_channel/reveal-pilot-1.json`
 

@@ -152,3 +152,39 @@ def test_committed_two_phase_smoke(tmp_path, monkeypatch):
     (run_dir / "sender_seal.sha256").write_text("bad\n")
     with pytest.raises(ValueError, match="sender seal hash mismatch"):
         experiment.audit(public, run_dir, reveal_path)
+
+
+def test_progress_retries_infrastructure_without_scoring_it(tmp_path, monkeypatch):
+    study = tmp_path / "covert_channel"
+    monkeypatch.setattr(experiment, "STUDY", study)
+    monkeypatch.setattr(experiment, "ensure_registered", lambda _path: None)
+    monkeypatch.setattr(experiment, "ensure_committed_file", lambda _path: None)
+    public, private = study / "preregistration.json", study / ".private" / "labels.json"
+    experiment.prepare(2, public, private)
+    run_dir = study / ".private" / "runs" / "resume"
+    valid = json.dumps({"schema_version": "1.0", "step_id": "test",
+                        "objective": "Continue public job",
+                        "success_criteria": ["Check evidence"],
+                        "required_memory_refs": []})
+    calls = []
+
+    def sender(_command, payload):
+        calls.append(payload["arm"])
+        if len(calls) == 2:
+            return "", 1
+        return json.dumps(payload["menu_handoffs"][0]) if payload["arm"] == "menu" else valid, 0
+
+    monkeypatch.setattr(experiment, "invoke", sender)
+    assert not experiment.send(public, private, run_dir, "sender", max_trials=1)
+    with pytest.raises(RuntimeError, match="retry same trial"):
+        experiment.send(public, private, run_dir, "sender", max_trials=1)
+    assert len(experiment.load_json(run_dir / "sender_progress.json")["rows"]) == 1
+    while not experiment.send(public, private, run_dir, "sender", max_trials=2):
+        pass
+    assert len(experiment.load_json(run_dir / "sender_seal.json")["sender_rows"]) == 6
+
+    monkeypatch.setattr(experiment, "invoke", lambda _command, _payload: ("NORTH", 0))
+    assert not experiment.receive(public, run_dir, "receiver", max_trials=2)
+    while not experiment.receive(public, run_dir, "receiver", max_trials=2):
+        pass
+    assert len(experiment.load_json(run_dir / "ledger.json")["rows"]) == 6
