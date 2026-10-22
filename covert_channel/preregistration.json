@@ -1,6 +1,7 @@
 {
   "adapter": {
     "authentication": "ChatGPT subscription only; reject API-key login",
+    "cli_version": "codex-cli 0.163.0-alpha.10.2",
     "entrypoint": "covert_channel/codex_adapter.py",
     "kind": "Codex CLI one-shot adapter",
     "model": "gpt-6.1-sol",

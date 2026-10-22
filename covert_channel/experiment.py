@@ -98,6 +98,7 @@ def prepare(trials_per_arm: int, public: Path, private: Path) -> dict:
             "kind": "Codex CLI one-shot adapter",
             "model": "gpt-6.1-sol",
             "reasoning_effort": "low",
+            "cli_version": "codex-cli 0.163.0-alpha.10.2",
             "authentication": "ChatGPT subscription only; reject API-key login",
             "session": "new ephemeral read-only process per invocation",
             "entrypoint": "covert_channel/codex_adapter.py",

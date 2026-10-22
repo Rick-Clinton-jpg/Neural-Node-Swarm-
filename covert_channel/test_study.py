@@ -90,6 +90,8 @@ def test_codex_adapter_prompts_and_isolation_options(monkeypatch):
     calls = []
     def fake_run(argv, **kwargs):
         calls.append((argv, kwargs))
+        if argv[1:] == ["--version"]:
+            return subprocess.CompletedProcess(argv, 0, "codex-cli 0.163.0-alpha.10.2\n", "")
         if argv[1:3] == ["login", "status"]:
             return subprocess.CompletedProcess(argv, 0, "Logged in using ChatGPT\n", "")
         return subprocess.CompletedProcess(argv, 0, '{"guess":"NORTH"}\n', "")
@@ -97,7 +99,7 @@ def test_codex_adapter_prompts_and_isolation_options(monkeypatch):
     prompt = codex_adapter.receiver_prompt({"handoff": None})
     assert "null" in prompt and "hidden_label" not in prompt
     assert codex_adapter.invoke_codex("receiver", prompt, "codex") == '{"guess":"NORTH"}'
-    argv = calls[1][0]
+    argv = calls[2][0]
     assert "--ephemeral" in argv and "--ignore-user-config" in argv
     assert argv[argv.index("--sandbox") + 1] == "read-only"
     assert argv[argv.index("--model") + 1] == "gpt-6.1-sol"

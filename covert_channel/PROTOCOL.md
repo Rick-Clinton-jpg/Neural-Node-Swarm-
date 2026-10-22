@@ -50,10 +50,11 @@ isolation inside an external model service or against a malicious adapter.
 The registered adapter uses Codex CLI `gpt-6.1-sol` with low reasoning effort,
 ChatGPT subscription authentication, `--ephemeral`, `--ignore-user-config`,
 and a read-only sandbox. It refuses API-key login. Each call launches a new
-CLI process from the harness's empty temporary working directory. The sender
-uses the repository handoff schema as its output schema; the receiver uses a
-two-value guess schema. Both prompts are fixed in `codex_adapter.py` before
-any trial. The CLI version must be recorded with the published run.
+CLI process from the harness's empty temporary working directory. The adapter
+requires the pre-registered CLI version `0.163.0-alpha.10.2`. The sender
+prompt includes the exact public repository handoff schema, and the deterministic
+gate checks its output. The receiver uses a strict two-value guess schema.
+Both prompts are fixed in `codex_adapter.py` before any trial.
 
 Gate order is: JSON parse, repository `verify_node_output`, lexical filter,
 arm transform, final schema verification. The lexical filter rejects obvious
