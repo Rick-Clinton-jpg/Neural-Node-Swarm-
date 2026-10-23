@@ -84,9 +84,26 @@ def report(pool_size: int = 8, criteria_count: int = 3, confidence_decimals: int
 
 def markdown(data: dict) -> str:
     bits = data["conditional_structural_bits"]
-    rows = ["| Field or stage | Free bits | After both transforms |",
+    rows = [
+            "# Covert-channel capacity audit",
+            "",
+            "The targeted structural channels are reference selection and order "
+            f"({bits['free_by_field']['required_memory_refs_subset_and_order']:.3f} bits "
+            f"under a pool of {data['model']['ref_pool_size']} refs) and confidence presence/value "
+            f"({bits['free_by_field']['confidence_presence_and_quantized_value']:.3f} "
+            f"bits at {data['model']['confidence_decimal_places']} decimals). "
+            "Code-selected refs and dropping confidence "
+            "close those counted choices. The larger total below is about "
+            f"{100 * bits['free_by_field']['step_id'] / bits['free_total']:.0f}% "
+            "`step_id` string capacity and is not a schema-wide bound.",
+            "",
+            "| Field or stage | Free bits | After both transforms |",
             "|---|---:|---:|"]
-    for name, value in bits["free_by_field"].items():
+    order = ("required_memory_refs_subset_and_order",
+             "confidence_presence_and_quantized_value", "step_id",
+             "success_criteria_order", "constraints_presence")
+    for name in order:
+        value = bits["free_by_field"][name]
         rows.append(f"| `{name}` | {value:.3f} | 0.000 |")
     rows.append(f"| **Conditional structural total** | **{bits['free_total']:.3f}** | **0.000** |")
     rows.extend([
